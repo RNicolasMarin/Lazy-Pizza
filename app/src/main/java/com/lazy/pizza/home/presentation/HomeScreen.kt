@@ -1,5 +1,6 @@
 package com.lazy.pizza.home.presentation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -27,8 +29,10 @@ import com.lazy.pizza.core.presentation.designsystem.InstrumentSansBold
 import com.lazy.pizza.core.presentation.designsystem.InstrumentSansRegularNormal
 import com.lazy.pizza.core.presentation.designsystem.LazyPizzaTheme
 import com.lazy.pizza.core.presentation.designsystem.MultiDevicePreview
+import com.lazy.pizza.core.presentation.designsystem.ScreenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.TextPrimary
 import com.lazy.pizza.core.presentation.designsystem.dimen
+import com.lazy.pizza.core.presentation.designsystem.screenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.statusBarHeight
 
 @Composable
@@ -41,11 +45,15 @@ fun HomeScreenRoot(
 @Composable
 fun HomeScreen(
     dimens: DimensHome = MaterialTheme.dimen.home,
+    screenConfiguration: ScreenConfiguration = MaterialTheme.screenConfiguration,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(BG)
+            .padding(
+                horizontal = dimens.paddingHorizontal
+            )
     ) {
         Spacer(
             modifier = Modifier.height(statusBarHeight())
@@ -54,8 +62,18 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth()
                 .padding(
                     vertical = 20.dp,
-                    horizontal = dimens.paddingHorizontal
                 )
+        )
+        Image(
+            painter = painterResource(id =
+                when(screenConfiguration) {
+                    ScreenConfiguration.PHONE_PORTRAIT -> R.mipmap.home_banner_phone
+                    ScreenConfiguration.TABLET_PORTRAIT -> R.mipmap.home_banner_tablet
+                }
+            ),
+            contentDescription = "Home Banner",
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
