@@ -26,11 +26,18 @@ fun LazyPizzaTheme(
         else -> TABLET_PORTRAIT
     }
 
-    ProvideScreenConfiguration(screenConfiguration) {
-        MaterialTheme(
-            colorScheme = ColorScheme,
-            typography = Typography,
-            content = content
-        )
+    val dimens = when (screenConfiguration) {
+        PHONE_PORTRAIT -> dimensPhonePortrait
+        TABLET_PORTRAIT -> dimensTabletPortrait
+    }
+
+    ProvideDimens(dimens) {
+        ProvideScreenConfiguration(screenConfiguration) {
+            MaterialTheme(
+                colorScheme = ColorScheme,
+                typography = Typography,
+                content = content
+            )
+        }
     }
 }
