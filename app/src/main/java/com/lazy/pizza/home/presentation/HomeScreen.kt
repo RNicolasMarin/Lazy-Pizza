@@ -43,16 +43,24 @@ import com.lazy.pizza.core.presentation.designsystem.TextSecondary
 import com.lazy.pizza.core.presentation.designsystem.dimen
 import com.lazy.pizza.core.presentation.designsystem.screenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.statusBarHeight
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreenRoot(
-
+    viewModel: HomeViewModel = koinViewModel()
 ) {
-    HomeScreen()
+    HomeScreen(
+        state = viewModel.state,
+        onAction = { action ->
+            viewModel.onAction(action)
+        }
+    )
 }
 
 @Composable
 fun HomeScreen(
+    state: HomeState,
+    onAction: (HomeAction) -> Unit,
     dimens: DimensHome = MaterialTheme.dimen.home,
     screenConfiguration: ScreenConfiguration = MaterialTheme.screenConfiguration,
 ) {
@@ -87,8 +95,10 @@ fun HomeScreen(
 
         Spacer(Modifier.height(16.dp))
         SearchBar(
-            value = "",
-            onValueChange = {}
+            value = state.searchField,
+            onValueChange = {
+                onAction(HomeAction.UpdateSearchBar(it))
+            }
         )
     }
 }
@@ -190,6 +200,8 @@ fun SearchBar(
 private fun ScanHistoryScreenPreview() {
     LazyPizzaTheme {
         HomeScreen(
+            state = HomeState(),
+            onAction = {},
         )
     }
 }
