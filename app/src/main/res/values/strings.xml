@@ -8,4 +8,8 @@
     <string name="home_category_drinks">Drinks</string>
     <string name="home_category_sauces">Sauces</string>
     <string name="home_category_ice_cream">Ice Cream</string>
+    <string name="home_products_category_pizza">PIZZA</string>
+    <string name="home_products_category_drinks">DRINKS</string>
+    <string name="home_products_category_sauces">SAUCES</string>
+    <string name="home_products_category_ice_cream">ICE CREAM</string>
 </resources>

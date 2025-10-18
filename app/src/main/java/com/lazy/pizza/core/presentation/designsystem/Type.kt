@@ -24,6 +24,14 @@ val InstrumentSansBold = TextStyle(
     letterSpacing = 0.sp
 )
 
+val InstrumentSansSemiBold = TextStyle(
+    fontFamily = InstrumentSans,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.sp
+)
+
 val InstrumentSansRegularNormal = TextStyle(
     fontFamily = InstrumentSans,
     fontWeight = FontWeight.Normal,
