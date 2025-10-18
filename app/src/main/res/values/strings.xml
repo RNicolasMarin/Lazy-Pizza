@@ -4,4 +4,8 @@
     <string name="home_toolbar_text">LazyPizza</string>
     <string name="home_toolbar_phone_number">+1 (555) 321–7890</string>
     <string name="home_searchbar_hint">Search for delicious food…</string>
+    <string name="home_category_pizza">Pizza</string>
+    <string name="home_category_drinks">Drinks</string>
+    <string name="home_category_sauces">Sauces</string>
+    <string name="home_category_ice_cream">Ice Cream</string>
 </resources>

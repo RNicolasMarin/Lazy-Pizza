@@ -32,6 +32,14 @@ val InstrumentSansRegularNormal = TextStyle(
     letterSpacing = 0.sp
 )
 
+val InstrumentSansMedium = TextStyle(
+    fontFamily = InstrumentSans,
+    fontWeight = FontWeight.Medium,
+    fontSize = 14.sp,
+    lineHeight = 18.sp,
+    letterSpacing = 0.sp
+)
+
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,

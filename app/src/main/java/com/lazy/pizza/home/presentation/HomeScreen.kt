@@ -2,6 +2,9 @@ package com.lazy.pizza.home.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
@@ -30,12 +35,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lazy.pizza.R
+import com.lazy.pizza.core.domain.Category
+import com.lazy.pizza.core.domain.Category.*
 import com.lazy.pizza.core.presentation.designsystem.BG
 import com.lazy.pizza.core.presentation.designsystem.DimensHome
 import com.lazy.pizza.core.presentation.designsystem.InstrumentSansBold
+import com.lazy.pizza.core.presentation.designsystem.InstrumentSansMedium
 import com.lazy.pizza.core.presentation.designsystem.InstrumentSansRegularNormal
 import com.lazy.pizza.core.presentation.designsystem.LazyPizzaTheme
 import com.lazy.pizza.core.presentation.designsystem.MultiDevicePreview
+import com.lazy.pizza.core.presentation.designsystem.Outline
 import com.lazy.pizza.core.presentation.designsystem.ScreenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.SurfaceHigher
 import com.lazy.pizza.core.presentation.designsystem.TextPrimary
@@ -76,7 +85,8 @@ fun HomeScreen(
             modifier = Modifier.height(statusBarHeight())
         )
         TopBar(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(
                     vertical = 20.dp,
                 )
@@ -100,6 +110,29 @@ fun HomeScreen(
                 onAction(HomeAction.UpdateSearchBar(it))
             }
         )
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp)
+        ) {
+            items(
+                items = Category.entries.toList(),
+                key = { category -> category}
+            ) { category ->
+                CategoryButton(
+                    category = stringResource(when (category) {
+                        PIZZA -> R.string.home_category_pizza
+                        DRINKS -> R.string.home_category_drinks
+                        SAUCES -> R.string.home_category_sauces
+                        ICE_CREAM -> R.string.home_category_ice_cream
+                    }),
+                    onClick = {
+
+                    }
+                )
+            }
+        }
     }
 }
 
@@ -192,6 +225,31 @@ fun SearchBar(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun CategoryButton(
+    category: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 8.dp
+) {
+    Box(
+        modifier = modifier
+            .background(Color.Transparent,RoundedCornerShape(cornerRadius))
+            .clip(RoundedCornerShape(cornerRadius))
+            .clickable(
+                onClick = onClick,
+            )
+            .border(1.dp, Outline, RoundedCornerShape(cornerRadius))
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+    ) {
+        Text(
+            text = category,
+            style = InstrumentSansMedium,
+            color = TextPrimary
+        )
     }
 }
 
