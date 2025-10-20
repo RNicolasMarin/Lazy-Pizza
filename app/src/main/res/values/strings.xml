@@ -13,4 +13,5 @@
     <string name="home_products_category_sauces">SAUCES</string>
     <string name="home_products_category_ice_cream">ICE CREAM</string>
     <string name="home_products_add">Add to Cart</string>
+    <string name="home_no_products">No results found for your query</string>
 </resources>
