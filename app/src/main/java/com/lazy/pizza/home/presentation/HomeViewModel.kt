@@ -2,7 +2,7 @@ package com.lazy.pizza.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lazy.pizza.core.domain.ProductRepository
+import com.lazy.pizza.core.domain.repository.ProductRepository
 import com.lazy.pizza.core.domain.ProductsByCategory
 import com.lazy.pizza.core.domain.Result
 import com.lazy.pizza.home.presentation.HomeAction.*

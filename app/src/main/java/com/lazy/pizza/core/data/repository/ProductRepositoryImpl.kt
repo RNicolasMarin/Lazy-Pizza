@@ -2,7 +2,7 @@ package com.lazy.pizza.core.data.repository
 
 import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Product
-import com.lazy.pizza.core.domain.ProductRepository
+import com.lazy.pizza.core.domain.repository.ProductRepository
 import com.lazy.pizza.core.domain.ProductsByCategory
 import com.lazy.pizza.core.domain.Result
 import kotlinx.coroutines.delay

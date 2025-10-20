@@ -2,12 +2,13 @@ package com.lazy.pizza.core.presentation.designsystem
 
 import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Product
+import com.lazy.pizza.core.domain.Topping
 
 object Urls {
 
     const val IMAGES_BASE_URL = "https://pl-coding.com/wp-content/uploads/lazypizza/"
 
-    fun getImageUrl(product: Product): String {
+    fun getProductImageUrl(product: Product): String {
         val category = when (product.category) {
             Category.PIZZA -> "pizza"
             Category.DRINKS -> "drink"
@@ -15,5 +16,10 @@ object Urls {
             Category.ICE_CREAM -> "ice cream"
         }
         return "$IMAGES_BASE_URL$category/${product.imageName ?: product.name}.png"
+    }
+
+    fun getToppingImageUrl(topping: Topping): String {
+        val category = "toppings"
+        return "$IMAGES_BASE_URL$category/${topping.imageName ?: topping.name}.png"
     }
 }

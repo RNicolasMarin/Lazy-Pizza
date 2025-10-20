@@ -312,7 +312,7 @@ fun ProductCard(
                 )
 
                 Image(
-                    painter = rememberAsyncImagePainter(Urls.getImageUrl(product)),
+                    painter = rememberAsyncImagePainter(Urls.getProductImageUrl(product)),
                     contentDescription = "Icon",
                     modifier = Modifier
                         .size(108.dp),
