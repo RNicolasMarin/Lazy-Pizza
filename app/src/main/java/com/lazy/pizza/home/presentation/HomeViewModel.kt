@@ -25,16 +25,19 @@ class HomeViewModel(
         allProductsByCategory,
         searchField
     ) { allProducts, field ->
-        val filtered = allProducts.map {
-            it.copy(
-                products = it.products.filter { product ->
-                    product.name.trim().contains(field.trim(), ignoreCase = true)
-                }
-            )
+        val filtered = allProducts.mapNotNull {
+            val filteredProducts = it.products.filter { product ->
+                product.name.contains(field.trim(), ignoreCase = true)
+            }
+            if (filteredProducts.isNotEmpty()) {
+                it.copy(products = filteredProducts)
+            } else {
+                null // exclude empty categories
+            }
         }
         HomeState(
             searchField = field,
-            productsByCategory = filtered
+            productsByCategories = filtered
         )
     }.stateIn(
         scope = viewModelScope,

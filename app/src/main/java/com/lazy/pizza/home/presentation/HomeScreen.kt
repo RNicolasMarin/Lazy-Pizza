@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Card
@@ -34,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,6 +82,7 @@ import com.lazy.pizza.core.presentation.designsystem.screenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.statusBarHeight
 import com.lazy.pizza.home.presentation.HomeAction.*
 import com.lazy.pizza.home.presentation.HomeAction.ActionWithProduct.*
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.util.Locale
 
@@ -108,7 +111,11 @@ fun HomeScreen(
     var totalHeightPx by remember { mutableFloatStateOf(0f) }
     var beforeProductsHeightPx by remember { mutableFloatStateOf(0f) }
 
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
     LazyColumn(
+        state = listState,
         modifier = Modifier
             .fillMaxSize()
             .background(BG)
@@ -176,20 +183,50 @@ fun HomeScreen(
                                 ICE_CREAM -> R.string.home_category_ice_cream
                             }),
                             onClick = {
+                                scope.launch {
+                                    // Scroll to "Vegetables" header, which is at index 1 + fruits.size
+                                    var index = 1//for the header
+                                    var categoryShown = false
+                                    for (productsByCategory in state.productsByCategories) {
+                                        if (productsByCategory.category == category) {
+                                            categoryShown = true
+                                            break
+                                        }
+                                        index += 1 + productsByCategory.products.size
+                                    }
 
+                                    if (categoryShown) {
+                                        listState.animateScrollToItem(index)
+                                    }
+                                }
                             }
                         )
                     }
                 }
             }
         }
-        if (!state.isLoading && state.productsByCategory.isNotEmpty()) {
-            var noProducts = true
-            state.productsByCategory.forEach { (category, products) ->
 
-                noProducts = noProducts && products.isEmpty()
-
-                if (products.isNotEmpty()) {
+        if (!state.isLoading) {
+            if (state.productsByCategories.isEmpty()) {
+                val noProductsHeightDp = with(density) {
+                    (totalHeightPx - beforeProductsHeightPx).toDp()
+                }
+                item {
+                    Box(
+                        modifier = Modifier
+                            .height(noProductsHeightDp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.home_no_products),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Gray
+                        )
+                    }
+                }
+            } else {
+                state.productsByCategories.forEach { (category, products) ->
                     item {
                         val text = when(category) {
                             PIZZA -> R.string.home_products_category_pizza
@@ -216,27 +253,6 @@ fun HomeScreen(
                         Spacer(Modifier.height(
                             if (it.id == products.last().id) 16.dp else 8.dp
                         ))
-                    }
-                }
-            }
-
-            if (noProducts) {
-
-                val noProductsHeightDp = with(density) {
-                    (totalHeightPx - beforeProductsHeightPx).toDp()
-                }
-                item {
-                    Box(
-                        modifier = Modifier
-                            .height(noProductsHeightDp)
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.home_no_products),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Gray
-                        )
                     }
                 }
             }
@@ -642,7 +658,7 @@ private fun ScanHistoryScreenPreview() {
     LazyPizzaTheme {
         HomeScreen(
             state = HomeState(
-                productsByCategory = ProductRepositoryImpl.productsByCategory
+                productsByCategories = ProductRepositoryImpl.productsByCategory
             ),
             onAction = {},
         )
