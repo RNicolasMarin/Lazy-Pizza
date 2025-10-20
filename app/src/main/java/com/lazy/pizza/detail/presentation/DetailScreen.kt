@@ -5,16 +5,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -25,12 +28,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.lazy.pizza.R
 import com.lazy.pizza.core.domain.Product
 import com.lazy.pizza.core.presentation.designsystem.BG
 import com.lazy.pizza.core.presentation.designsystem.DimensDetail
+import com.lazy.pizza.core.presentation.designsystem.InstrumentSansRegularNormal
+import com.lazy.pizza.core.presentation.designsystem.InstrumentSansSemiBold
 import com.lazy.pizza.core.presentation.designsystem.SurfaceHigher
+import com.lazy.pizza.core.presentation.designsystem.TextPrimary
+import com.lazy.pizza.core.presentation.designsystem.TextSecondary
 import com.lazy.pizza.core.presentation.designsystem.TextSecondary8
 import com.lazy.pizza.core.presentation.designsystem.Urls
 import com.lazy.pizza.core.presentation.designsystem.dimen
@@ -111,13 +119,36 @@ fun DetailScreen(
                 }
             }
         }
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .background(SurfaceHigher, RoundedCornerShape(topStart = 16.dp, topEnd = 0.dp, bottomStart = 0.dp, bottomEnd = 0.dp))
+                .padding(
+                    horizontal = dimens.paddingHorizontal,
+                    vertical = 20.dp
+                )
         ) {
-
+            state.product?.let {
+                Text(
+                    text = it.name,
+                    style = InstrumentSansSemiBold.copy(
+                        fontSize = 24.sp,
+                        lineHeight = 28.sp
+                    ),
+                    color = TextPrimary
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = it.ingredients,
+                    style = InstrumentSansRegularNormal.copy(
+                        fontSize = 14.sp,
+                        lineHeight = 18.sp
+                    ),
+                    color = TextSecondary
+                )
+                Spacer(Modifier.height(16.dp))
+            }
         }
     }
 }

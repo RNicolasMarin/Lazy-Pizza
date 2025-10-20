@@ -351,7 +351,7 @@ fun ProductCard(
                 }
 
                 Text(
-                    text = product.description,
+                    text = product.ingredients,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     style = InstrumentSansRegularNormal.copy(

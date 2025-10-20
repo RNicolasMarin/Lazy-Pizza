@@ -18,7 +18,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 1,
                         category = Category.PIZZA,
                         name = "Margherita",
-                        description = "Tomato sauce, mozzarella, fresh basil, olive oil",
+                        ingredients = "Tomato sauce, mozzarella, fresh basil, olive oil",
                         unitPrice = 8.99,
                         amount = 0,
                     ),
@@ -26,7 +26,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 2,
                         category = Category.PIZZA,
                         name = "Pepperoni",
-                        description = "Tomato sauce, mozzarella, pepperoni",
+                        ingredients = "Tomato sauce, mozzarella, pepperoni",
                         unitPrice = 9.99,
                         amount = 0
                     ),
@@ -34,7 +34,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 3,
                         category = Category.PIZZA,
                         name = "Hawaiian",
-                        description = "Tomato sauce, mozzarella, ham, pineapple",
+                        ingredients = "Tomato sauce, mozzarella, ham, pineapple",
                         unitPrice = 10.49,
                         amount = 0
                     ),
@@ -42,7 +42,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 4,
                         category = Category.PIZZA,
                         name = "BBQ Chicken",
-                        description = "BBQ sauce, mozzarella, grilled chicken, onion, corn",
+                        ingredients = "BBQ sauce, mozzarella, grilled chicken, onion, corn",
                         unitPrice = 11.49,
                         amount = 0
                     ),
@@ -50,7 +50,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 5,
                         category = Category.PIZZA,
                         name = "Four Cheese",
-                        description = "Mozzarella, gorgonzola, parmesan, ricotta",
+                        ingredients = "Mozzarella, gorgonzola, parmesan, ricotta",
                         unitPrice = 11.99,
                         amount = 0
                     ),
@@ -58,7 +58,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 6,
                         category = Category.PIZZA,
                         name = "Veggie Delight",
-                        description = "Tomato sauce, mozzarella, mushrooms, olives, bell pepper, onion, corn",
+                        ingredients = "Tomato sauce, mozzarella, mushrooms, olives, bell pepper, onion, corn",
                         unitPrice = 9.79,
                         amount = 0
                     ),
@@ -66,7 +66,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 7,
                         category = Category.PIZZA,
                         name = "Meat Lovers",
-                        description = "Tomato sauce, mozzarella, pepperoni, ham, bacon, sausage",
+                        ingredients = "Tomato sauce, mozzarella, pepperoni, ham, bacon, sausage",
                         unitPrice = 12.49,
                         amount = 0
                     ),
@@ -74,7 +74,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 8,
                         category = Category.PIZZA,
                         name = "Spicy Inferno",
-                        description = "Tomato sauce, mozzarella, spicy salami, jalapeños, red chili pepper, garlic",
+                        ingredients = "Tomato sauce, mozzarella, spicy salami, jalapeños, red chili pepper, garlic",
                         unitPrice = 11.29,
                         amount = 0
                     ),
@@ -82,7 +82,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 9,
                         category = Category.PIZZA,
                         name = "Seafood Special",
-                        description = "Tomato sauce, mozzarella, shrimp, mussels, squid, parsley",
+                        ingredients = "Tomato sauce, mozzarella, shrimp, mussels, squid, parsley",
                         unitPrice = 13.99,
                         amount = 0
                     ),
@@ -90,7 +90,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 10,
                         category = Category.PIZZA,
                         name = "Truffle Mushroom",
-                        description = "Cream sauce, mozzarella, mushrooms, truffle oil, parmesan",
+                        ingredients = "Cream sauce, mozzarella, mushrooms, truffle oil, parmesan",
                         unitPrice = 12.99,
                         amount = 0
                     )
@@ -103,7 +103,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 11,
                         category = Category.DRINKS,
                         name = "Mineral Water",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 1.49,
                         amount = 0,
                         imageName = "mineral water"
@@ -112,7 +112,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 12,
                         category = Category.DRINKS,
                         name = "7-Up",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 1.89,
                         amount = 0,
                         imageName = "7-up"
@@ -121,7 +121,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 13,
                         category = Category.DRINKS,
                         name = "Pepsi",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 1.99,
                         amount = 0,
                         imageName = "pepsi",
@@ -130,7 +130,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 14,
                         category = Category.DRINKS,
                         name = "Orange Juice",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 2.49,
                         amount = 0,
                         imageName = "orange juice",
@@ -139,7 +139,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 15,
                         category = Category.DRINKS,
                         name = "Apple Juice",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 2.29,
                         amount = 0,
                         imageName = "apple juice",
@@ -148,7 +148,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 16,
                         category = Category.DRINKS,
                         name = "Iced Tea (Lemon)",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 2.19,
                         amount = 0,
                         imageName = "iced tea",
@@ -162,7 +162,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 17,
                         category = Category.SAUCES,
                         name = "Garlic Sauce",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 0.59,
                         amount = 0
                     ),
@@ -170,7 +170,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 18,
                         category = Category.SAUCES,
                         name = "BBQ Sauce",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 0.59,
                         amount = 0
                     ),
@@ -178,7 +178,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 19,
                         category = Category.SAUCES,
                         name = "Cheese Sauce",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 0.89,
                         amount = 0
                     ),
@@ -186,7 +186,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 20,
                         category = Category.SAUCES,
                         name = "Spicy Chili Sauce",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 0.59,
                         amount = 0
                     )
@@ -199,7 +199,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 21,
                         category = Category.ICE_CREAM,
                         name = "Vanilla Ice Cream",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 2.49,
                         amount = 0,
                         imageName = "vanilla"
@@ -208,7 +208,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 22,
                         category = Category.ICE_CREAM,
                         name = "Chocolate Ice Cream",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 2.49,
                         amount = 0,
                         imageName = "chocolate"
@@ -217,7 +217,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 23,
                         category = Category.ICE_CREAM,
                         name = "Strawberry Ice Cream",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 2.49,
                         amount = 0,
                         imageName = "strawberry"
@@ -226,7 +226,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 24,
                         category = Category.ICE_CREAM,
                         name = "Cookies Ice Cream",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 2.79,
                         amount = 0,
                         imageName = "cookies"
@@ -235,7 +235,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 25,
                         category = Category.ICE_CREAM,
                         name = "Pistachio Ice Cream",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 2.99,
                         amount = 0,
                         imageName = "pistachio"
@@ -244,7 +244,7 @@ class ProductRepositoryImpl: ProductRepository {
                         id = 26,
                         category = Category.ICE_CREAM,
                         name = "Mango Sorbet",
-                        description = "",
+                        ingredients = "",
                         unitPrice = 2.69,
                         amount = 0,
                         imageName = "mango sorbet"
