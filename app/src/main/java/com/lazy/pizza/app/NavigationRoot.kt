@@ -31,7 +31,12 @@ fun NavigationRoot(
             typeMap = mapOf(typeOf<Product>() to ProductNavType)
         ) { backStackEntry ->
             val args = backStackEntry.toRoute<Screen.Detail>()
-            DetailScreenRoot(product = args.product)
+            DetailScreenRoot(
+                onBackPressed = {
+                    navController.popBackStack()
+                },
+                product = args.product
+            )
         }
     }
 
