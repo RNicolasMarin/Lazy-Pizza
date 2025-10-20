@@ -1,5 +1,8 @@
 package com.lazy.pizza.core.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Product(
     val id: Long,
     val category: Category,
