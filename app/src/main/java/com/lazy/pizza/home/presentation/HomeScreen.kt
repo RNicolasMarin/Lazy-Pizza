@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -58,6 +59,9 @@ import com.lazy.pizza.core.presentation.designsystem.InstrumentSansSemiBold
 import com.lazy.pizza.core.presentation.designsystem.LazyPizzaTheme
 import com.lazy.pizza.core.presentation.designsystem.MultiDevicePreview
 import com.lazy.pizza.core.presentation.designsystem.Outline
+import com.lazy.pizza.core.presentation.designsystem.Outline50
+import com.lazy.pizza.core.presentation.designsystem.Primary
+import com.lazy.pizza.core.presentation.designsystem.Primary8
 import com.lazy.pizza.core.presentation.designsystem.ScreenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.SurfaceHigher
 import com.lazy.pizza.core.presentation.designsystem.SurfaceHighest
@@ -67,7 +71,10 @@ import com.lazy.pizza.core.presentation.designsystem.Urls
 import com.lazy.pizza.core.presentation.designsystem.dimen
 import com.lazy.pizza.core.presentation.designsystem.screenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.statusBarHeight
+import com.lazy.pizza.home.presentation.HomeAction.*
+import com.lazy.pizza.home.presentation.HomeAction.ActionWithProduct.*
 import org.koin.androidx.compose.koinViewModel
+import java.util.Locale
 
 @Composable
 fun HomeScreenRoot(
@@ -127,7 +134,7 @@ fun HomeScreen(
                 SearchBar(
                     value = state.searchField,
                     onValueChange = {
-                        onAction(HomeAction.UpdateSearchBar(it))
+                        onAction(UpdateSearchBar(it))
                     }
                 )
                 LazyRow(
@@ -176,6 +183,7 @@ fun HomeScreen(
                     key = { product -> product.id }
                 ) {
                     ProductCard(
+                        onAction = onAction,
                         product = it,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -190,6 +198,7 @@ fun HomeScreen(
 
 @Composable
 fun ProductCard(
+    onAction: (HomeAction) -> Unit,
     product: Product,
     modifier: Modifier = Modifier
 ) {
@@ -214,7 +223,10 @@ fun ProductCard(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(SurfaceHighest, RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
+                        .background(
+                            SurfaceHighest,
+                            RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
+                        )
                 )
 
                 Image(
@@ -234,14 +246,28 @@ fun ProductCard(
                         horizontal = 16.dp
                     )
             ) {
-                Text(
-                    text = product.name,
-                    style = InstrumentSansMedium.copy(
-                        fontSize = 16.sp,
-                        lineHeight = 22.sp
-                    ),
-                    color = TextPrimary
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = product.name,
+                        style = InstrumentSansMedium.copy(
+                            fontSize = 16.sp,
+                            lineHeight = 22.sp
+                        ),
+                        color = TextPrimary,
+                        modifier = Modifier.weight(1f)
+                    )
+                    if (product.amount > 0) {
+                        Spacer(Modifier.width(4.dp))
+                        DeleteButton(
+                            onClick = {
+                                onAction(DeleteFromCart(product))
+                            }
+                        )
+                    }
+                }
+
                 Text(
                     text = product.description,
                     maxLines = 2,
@@ -252,18 +278,155 @@ fun ProductCard(
                     ),
                     color = TextSecondary
                 )
+
                 Spacer(Modifier.weight(1f))
-                Text(
-                    text = "$${product.unitPrice}",
-                    style = InstrumentSansSemiBold.copy(
-                        fontSize = 24.sp,
-                        lineHeight = 28.sp
-                    ),
-                    color = TextPrimary
-                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    when {
+                        product.amount == 0 -> {
+                            Text(
+                                text = "$${product.unitPrice}",
+                                style = InstrumentSansSemiBold.copy(
+                                    fontSize = 24.sp,
+                                    lineHeight = 28.sp
+                                ),
+                                color = TextPrimary
+                            )
+                            if (product.category != PIZZA) {
+                                Spacer(Modifier.weight(1f))
+                                AddButton(
+                                    onClick = {
+                                        onAction(AddToCart(product))
+                                    }
+                                )
+                            }
+                        }
+                        product.amount > 0 -> {
+                            MinusButton(
+                                onClick = {
+                                    onAction(ReduceFromCart(product))
+                                }
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = product.amount.toString(),
+                                style = InstrumentSansSemiBold.copy(
+                                    fontSize = 20.sp,
+                                    lineHeight = 24.sp
+                                ),
+                                color = TextPrimary
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            PlusButton(
+                                onClick = {
+                                    onAction(IncreaseFromCart(product))
+                                }
+                            )
+
+                            Spacer(Modifier.weight(1f))
+
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                            ) {
+                                Text(
+                                    text = "$${String.format(Locale.US, "%.2f", (product.amount * product.unitPrice))}",
+                                    style = InstrumentSansSemiBold.copy(
+                                        fontSize = 24.sp,
+                                        lineHeight = 28.sp
+                                    ),
+                                    color = TextPrimary
+                                )
+                                Text(
+                                    text = "${product.amount} x $${product.unitPrice}",
+                                    style = InstrumentSansRegularNormal.copy(
+                                        fontSize = 12.sp,
+                                        lineHeight = 16.sp
+                                    ),
+                                    color = TextSecondary
+                                )
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }
+}
+
+@Composable
+fun IconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 8.dp,
+    border: Color,
+    painterRes: Int,
+    description: String
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .background(Color.Transparent, RoundedCornerShape(cornerRadius))
+            .clip(RoundedCornerShape(cornerRadius))
+            .clickable(
+                onClick = onClick,
+            )
+            .border(1.dp, border, RoundedCornerShape(cornerRadius))
+            .padding(4.dp)
+    ) {
+        Icon(
+            painter = painterResource(painterRes),
+            tint = Color.Unspecified,
+            contentDescription = description,
+            modifier = Modifier.size(14.dp)
+        )
+    }
+}
+
+@Composable
+fun DeleteButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier,
+        border = Outline50,
+        painterRes = R.drawable.ic_delete,
+        description = "Delete Icon"
+    )
+}
+
+@Composable
+fun MinusButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier,
+        border = Outline50,
+        painterRes = R.drawable.ic_minus,
+        description = "Minus Icon"
+    )
+}
+
+@Composable
+fun PlusButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier,
+        border = Outline50,
+        painterRes = R.drawable.ic_plus,
+        description = "Plus Icon"
+    )
 }
 
 @Composable
@@ -363,22 +526,64 @@ fun CategoryButton(
     category: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 8.dp
+) {
+    OutlineButtonText(
+        modifier = modifier,
+        text = category,
+        onClick = onClick,
+        cornerRadius = 8.dp,
+        border = Outline,
+        horizontalPadding = 12.dp,
+        verticalPadding = 6.dp,
+        textColor = TextPrimary,
+        textStyle = InstrumentSansMedium
+    )
+}
+
+@Composable
+fun AddButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutlineButtonText(
+        modifier = modifier,
+        text = stringResource(R.string.home_products_add),
+        onClick = onClick,
+        cornerRadius = 100.dp,
+        border = Primary8,
+        horizontalPadding = 12.dp,
+        verticalPadding = 6.dp,
+        textColor = Primary,
+        textStyle = InstrumentSansSemiBold
+    )
+}
+
+@Composable
+fun OutlineButtonText(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp,
+    border: Color,
+    horizontalPadding: Dp,
+    verticalPadding: Dp,
+    textColor: Color,
+    textStyle: TextStyle
 ) {
     Box(
         modifier = modifier
-            .background(Color.Transparent,RoundedCornerShape(cornerRadius))
+            .background(Color.Transparent, RoundedCornerShape(cornerRadius))
             .clip(RoundedCornerShape(cornerRadius))
             .clickable(
                 onClick = onClick,
             )
-            .border(1.dp, Outline, RoundedCornerShape(cornerRadius))
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .border(1.dp, border, RoundedCornerShape(cornerRadius))
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
     ) {
         Text(
-            text = category,
-            style = InstrumentSansMedium,
-            color = TextPrimary
+            text = text,
+            style = textStyle,
+            color = textColor
         )
     }
 }

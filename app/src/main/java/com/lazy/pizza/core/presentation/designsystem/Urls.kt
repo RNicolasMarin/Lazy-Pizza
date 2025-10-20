@@ -12,7 +12,7 @@ object Urls {
             Category.PIZZA -> "pizza"
             Category.DRINKS -> "drink"
             Category.SAUCES -> "sauce"
-            Category.ICE_CREAM -> "icecream"
+            Category.ICE_CREAM -> "ice cream"
         }
         return "$IMAGES_BASE_URL$category/${product.imageName ?: product.name}.png"
     }
