@@ -6,7 +6,7 @@ import com.lazy.pizza.core.domain.ProductRepository
 import com.lazy.pizza.core.domain.ProductsByCategory
 import com.lazy.pizza.core.domain.Result
 import com.lazy.pizza.home.presentation.HomeAction.*
-import com.lazy.pizza.home.presentation.HomeAction.ActionWithProduct.*
+import com.lazy.pizza.home.presentation.HomeAction.ActionAffectingProductQuantity.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -61,7 +61,7 @@ class HomeViewModel(
                 searchField.value = action.searching
             }
 
-            is ActionWithProduct -> {
+            is ActionAffectingProductQuantity -> {
                 allProductsByCategory.value = allProductsByCategory.value.map {
                     if (it.category == action.product.category) {
                         it.copy(
@@ -99,6 +99,8 @@ class HomeViewModel(
                     }
                 }
             }
+
+            is ProductSelected -> Unit
         }
     }
 }

@@ -81,19 +81,26 @@ import com.lazy.pizza.core.presentation.designsystem.dimen
 import com.lazy.pizza.core.presentation.designsystem.screenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.statusBarHeight
 import com.lazy.pizza.home.presentation.HomeAction.*
-import com.lazy.pizza.home.presentation.HomeAction.ActionWithProduct.*
+import com.lazy.pizza.home.presentation.HomeAction.ActionAffectingProductQuantity.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.util.Locale
 
 @Composable
 fun HomeScreenRoot(
+    onProductSelected: (Product) -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     HomeScreen(
         state = state,
         onAction = { action ->
+            when (action) {
+                is ProductSelected -> {
+                    onProductSelected(action.product)
+                }
+                else -> Unit
+            }
             viewModel.onAction(action)
         }
     )
@@ -267,7 +274,18 @@ fun ProductCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            then(
+                if (product.category == PIZZA) {
+                    Modifier.clickable(
+                        onClick = {
+                            onAction(ProductSelected(product))
+                        }
+                    )
+                } else {
+                    Modifier
+                }
+            ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors().copy(
             containerColor = SurfaceHigher,
