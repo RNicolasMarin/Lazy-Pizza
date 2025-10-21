@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lazy.pizza.core.domain.Result
 import com.lazy.pizza.core.domain.repository.ToppingRepository
+import com.lazy.pizza.detail.presentation.DetailAction.*
+import com.lazy.pizza.detail.presentation.DetailAction.ActionAffectingToppingQuantity.*
 import kotlinx.coroutines.launch
 
 class DetailViewModel(
@@ -29,13 +31,41 @@ class DetailViewModel(
     }
     fun onAction(action: DetailAction) {
         when (action) {
-            is DetailAction.SetProduct -> {
+            is SetProduct -> {
                 state = state.copy(
                     product = action.product
                 )
             }
 
-            DetailAction.OnBackPressed -> Unit
+            is ActionAffectingToppingQuantity -> {
+                state = state.copy(
+                    toppings = state.toppings.map { topping ->
+                        if (topping.id == action.topping.id) {
+                            when (action) {
+                                is AddToCart -> {
+                                    topping.copy(
+                                        amount = 1
+                                    )
+                                }
+                                is IncreaseFromCart -> {
+                                    topping.copy(
+                                        amount = topping.amount + 1,
+                                    )
+                                }
+                                is ReduceFromCart -> {
+                                    topping.copy(
+                                        amount = topping.amount - 1,
+                                    )
+                                }
+                            }
+                        } else {
+                            topping
+                        }
+                    }
+                )
+            }
+
+            OnBackPressed -> Unit
         }
     }
 }

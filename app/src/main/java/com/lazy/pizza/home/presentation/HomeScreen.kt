@@ -59,6 +59,8 @@ import com.lazy.pizza.core.data.repository.ProductRepositoryImpl
 import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Category.*
 import com.lazy.pizza.core.domain.Product
+import com.lazy.pizza.core.presentation.components.AmountSelector
+import com.lazy.pizza.core.presentation.components.IconButton
 import com.lazy.pizza.core.presentation.designsystem.BG
 import com.lazy.pizza.core.presentation.designsystem.DimensHome
 import com.lazy.pizza.core.presentation.designsystem.InstrumentSansBold
@@ -388,23 +390,12 @@ fun ProductCard(
                             }
                         }
                         product.amount > 0 -> {
-                            MinusButton(
-                                onClick = {
+                            AmountSelector(
+                                amount = product.amount.toString(),
+                                onMinus = {
                                     onAction(ReduceFromCart(product))
-                                }
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(
-                                text = product.amount.toString(),
-                                style = InstrumentSansSemiBold.copy(
-                                    fontSize = 20.sp,
-                                    lineHeight = 24.sp
-                                ),
-                                color = TextPrimary
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            PlusButton(
-                                onClick = {
+                                },
+                                onPlus = {
                                     onAction(IncreaseFromCart(product))
                                 }
                             )
@@ -441,35 +432,6 @@ fun ProductCard(
 }
 
 @Composable
-fun IconButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    cornerRadius: Dp = 8.dp,
-    border: Color,
-    painterRes: Int,
-    description: String
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .background(Color.Transparent, RoundedCornerShape(cornerRadius))
-            .clip(RoundedCornerShape(cornerRadius))
-            .clickable(
-                onClick = onClick,
-            )
-            .border(1.dp, border, RoundedCornerShape(cornerRadius))
-            .padding(4.dp)
-    ) {
-        Icon(
-            painter = painterResource(painterRes),
-            tint = Color.Unspecified,
-            contentDescription = description,
-            modifier = Modifier.size(14.dp)
-        )
-    }
-}
-
-@Composable
 fun DeleteButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -477,37 +439,10 @@ fun DeleteButton(
     IconButton(
         onClick = onClick,
         modifier = modifier,
+        iconColor = Primary,
         border = Outline50,
         painterRes = R.drawable.ic_delete,
         description = "Delete Icon"
-    )
-}
-
-@Composable
-fun MinusButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    IconButton(
-        onClick = onClick,
-        modifier = modifier,
-        border = Outline50,
-        painterRes = R.drawable.ic_minus,
-        description = "Minus Icon"
-    )
-}
-
-@Composable
-fun PlusButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    IconButton(
-        onClick = onClick,
-        modifier = modifier,
-        border = Outline50,
-        painterRes = R.drawable.ic_plus,
-        description = "Plus Icon"
     )
 }
 

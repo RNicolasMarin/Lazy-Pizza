@@ -61,10 +61,13 @@ import androidx.core.graphics.toColorInt
 import com.lazy.pizza.core.data.repository.ToppingRepositoryImpl
 import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Topping
+import com.lazy.pizza.core.presentation.components.AmountSelector
 import com.lazy.pizza.core.presentation.designsystem.LazyPizzaTheme
 import com.lazy.pizza.core.presentation.designsystem.MultiDevicePreview
 import com.lazy.pizza.core.presentation.designsystem.Outline
+import com.lazy.pizza.core.presentation.designsystem.Primary
 import com.lazy.pizza.core.presentation.designsystem.Primary8
+import com.lazy.pizza.detail.presentation.DetailAction.ActionAffectingToppingQuantity.*
 import java.util.Locale
 
 @Composable
@@ -206,6 +209,7 @@ fun DetailScreen(
                             key = { topping -> topping.id }
                         ) { topping ->
                             ToppingCard(
+                                onAction = onAction,
                                 topping = topping
                             )
                         }
@@ -219,15 +223,27 @@ fun DetailScreen(
 @Composable
 fun ToppingCard(
     topping: Topping,
+    onAction: (DetailAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .then(
+                if (topping.amount == 0) {
+                    Modifier.clickable(
+                        onClick = {
+                            onAction(AddToCart(topping))
+                        }
+                    )
+                } else {
+                    Modifier
+                }
+            ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors().copy(
             containerColor = SurfaceHigher,
         ),
-        border = BorderStroke(1.dp, Outline),
+        border = BorderStroke(1.dp, if (topping.amount == 0) Outline else Primary),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(
@@ -265,14 +281,28 @@ fun ToppingCard(
             )
             Spacer(Modifier.height(6.dp))
 
-            Text(
-                text = "$${topping.unitPrice.toPriceString()}",
-                style = InstrumentSansSemiBold.copy(
-                    fontSize = 20.sp,
-                    lineHeight = 24.sp
-                ),
-                color = TextPrimary
-            )
+            if (topping.amount > 0) {
+                AmountSelector(
+                    modifier = Modifier.fillMaxWidth(),
+                    amount = topping.amount.toString(),
+                    onMinus = {
+                        onAction(ReduceFromCart(topping))
+                    },
+                    onPlus = {
+                        onAction(IncreaseFromCart(topping))
+                    },
+                    isPlusEnable = topping.amount < 3
+                )
+            } else {
+                Text(
+                    text = "$${topping.unitPrice.toPriceString()}",
+                    style = InstrumentSansSemiBold.copy(
+                        fontSize = 20.sp,
+                        lineHeight = 24.sp
+                    ),
+                    color = TextPrimary
+                )
+            }
         }
     }
 }
