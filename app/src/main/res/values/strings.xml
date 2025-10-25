@@ -15,4 +15,5 @@
     <string name="home_products_add">Add to Cart</string>
     <string name="home_no_products">No results found for your query</string>
     <string name="detail_add_toppings">Add Extra Toppings</string>
+    <string name="detail_add_to_cart">Add to Cart for $%1$.2f</string>
 </resources>

@@ -13,7 +13,8 @@ data class DimensHome(
 )
 
 data class DimensDetail(
-    val paddingHorizontal: Dp
+    val paddingHorizontal: Dp,
+    val addCartOverlay: Dp
 )
 
 val dimensPhonePortrait = Dimens(
@@ -21,7 +22,8 @@ val dimensPhonePortrait = Dimens(
         paddingHorizontal = 16.dp
     ),
     detail = DimensDetail(
-        paddingHorizontal = 16.dp
+        paddingHorizontal = 16.dp,
+        addCartOverlay = 100.dp
     )
 )
 
@@ -30,6 +32,7 @@ val dimensTabletPortrait = Dimens(
         paddingHorizontal = 16.dp
     ),
     detail = DimensDetail(
-        paddingHorizontal = 16.dp
+        paddingHorizontal = 16.dp,
+        addCartOverlay = 100.dp
     )
 )

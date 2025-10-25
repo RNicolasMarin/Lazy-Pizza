@@ -27,10 +27,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -58,6 +61,7 @@ import com.lazy.pizza.core.presentation.designsystem.statusBarHeight
 import com.lazy.pizza.detail.presentation.DetailAction.*
 import org.koin.androidx.compose.koinViewModel
 import androidx.core.graphics.toColorInt
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lazy.pizza.core.data.repository.ToppingRepositoryImpl
 import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Topping
@@ -67,6 +71,9 @@ import com.lazy.pizza.core.presentation.designsystem.MultiDevicePreview
 import com.lazy.pizza.core.presentation.designsystem.Outline
 import com.lazy.pizza.core.presentation.designsystem.Primary
 import com.lazy.pizza.core.presentation.designsystem.Primary8
+import com.lazy.pizza.core.presentation.designsystem.PrimaryGradientEnd
+import com.lazy.pizza.core.presentation.designsystem.PrimaryGradientStart
+import com.lazy.pizza.core.presentation.designsystem.TextOnPrimary
 import com.lazy.pizza.detail.presentation.DetailAction.ActionAffectingToppingQuantity.*
 import java.util.Locale
 
@@ -79,8 +86,11 @@ fun DetailScreenRoot(
     LaunchedEffect(Unit) {
         viewModel.onAction(SetProduct(product))
     }
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     DetailScreen(
-        state = viewModel.state,
+        state = state,
         onAction = { action ->
             when (action) {
                 OnBackPressed -> onBackPressed()
@@ -131,7 +141,15 @@ fun DetailScreen(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(BG, RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 0.dp, bottomEnd = 16.dp))
+                    .background(
+                        BG,
+                        RoundedCornerShape(
+                            topStart = 0.dp,
+                            topEnd = 0.dp,
+                            bottomStart = 0.dp,
+                            bottomEnd = 16.dp
+                        )
+                    )
             ) {
                 state.product?.let {
                     Image(
@@ -144,77 +162,116 @@ fun DetailScreen(
                 }
             }
         }
-        Column(
+        Box(
+            contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .drawBehind {
-                    val paint = Paint().asFrameworkPaint().apply {
-                        color = "#0A03131F".toColorInt()
-                        setShadowLayer(16f, 0f, -4f, color)
-                    }
-                    drawIntoCanvas {
-                        it.nativeCanvas.drawRect(0f, 0f, size.width, size.height, paint)
-                    }
-                }
-                .background(SurfaceHigher, RoundedCornerShape(topStart = 16.dp, topEnd = 0.dp, bottomStart = 0.dp, bottomEnd = 0.dp))
-                .padding(
-                    start = dimens.paddingHorizontal,
-                    end = dimens.paddingHorizontal,
-                    top = 20.dp,
-                    bottom = 10.dp
-                )
         ) {
-            state.product?.let {
-                Text(
-                    text = it.name,
-                    style = InstrumentSansSemiBold.copy(
-                        fontSize = 24.sp,
-                        lineHeight = 28.sp
-                    ),
-                    color = TextPrimary
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = it.ingredients,
-                    style = InstrumentSansRegularNormal.copy(
-                        fontSize = 14.sp,
-                        lineHeight = 18.sp
-                    ),
-                    color = TextSecondary
-                )
-                Spacer(Modifier.height(16.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .drawBehind {
+                        val paint = Paint().asFrameworkPaint().apply {
+                            color = "#0A03131F".toColorInt()
+                            setShadowLayer(16f, 0f, -4f, color)
+                        }
+                        drawIntoCanvas {
+                            it.nativeCanvas.drawRect(0f, 0f, size.width, size.height, paint)
+                        }
+                    }
+                    .background(
+                        SurfaceHigher,
+                        RoundedCornerShape(
+                            topStart = 16.dp,
+                            topEnd = 0.dp,
+                            bottomStart = 0.dp,
+                            bottomEnd = 0.dp
+                        )
+                    )
+                    .padding(
+                        start = dimens.paddingHorizontal,
+                        end = dimens.paddingHorizontal,
+                        top = 20.dp,
+                        bottom = 10.dp
+                    )
+            ) {
+                state.product?.let {
+                    Text(
+                        text = it.name,
+                        style = InstrumentSansSemiBold.copy(
+                            fontSize = 24.sp,
+                            lineHeight = 28.sp
+                        ),
+                        color = TextPrimary
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = it.ingredients,
+                        style = InstrumentSansRegularNormal.copy(
+                            fontSize = 14.sp,
+                            lineHeight = 18.sp
+                        ),
+                        color = TextSecondary
+                    )
+                    Spacer(Modifier.height(16.dp))
 
-                Text(
-                    text = stringResource(R.string.detail_add_toppings).uppercase(),
-                    style = InstrumentSansSemiBold.copy(
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp
-                    ),
-                    color = TextSecondary
-                )
+                    Text(
+                        text = stringResource(R.string.detail_add_toppings).uppercase(),
+                        style = InstrumentSansSemiBold.copy(
+                            fontSize = 12.sp,
+                            lineHeight = 16.sp
+                        ),
+                        color = TextSecondary
+                    )
 
-                Spacer(Modifier.height(6.dp))
+                    Spacer(Modifier.height(6.dp))
 
-                if (!state.isLoading) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        //state = listState,
-                        modifier = Modifier,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        items(
-                            items = state.toppings,
-                            key = { topping -> topping.id }
-                        ) { topping ->
-                            ToppingCard(
-                                onAction = onAction,
-                                topping = topping
-                            )
+                    if (!state.isLoading) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3),
+                            modifier = Modifier,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            items(
+                                items = state.toppings,
+                                key = { topping -> topping.id }
+                            ) { topping ->
+                                ToppingCard(
+                                    onAction = onAction,
+                                    topping = topping
+                                )
+                            }
+                            item {
+                                Spacer(Modifier.height(dimens.addCartOverlay))
+                            }
                         }
                     }
                 }
+            }
+
+            Box(
+                contentAlignment = Alignment.BottomCenter,
+                modifier = Modifier
+                    .height(dimens.addCartOverlay)
+                    .fillMaxWidth()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xFFFFFFFF),          // solid white at start
+                                Color(0xFFFFFFFF).copy(alpha = 0f) // transparent at end
+                            ),
+                            startY = Float.POSITIVE_INFINITY, // 0deg → bottom to top
+                            endY = 0f
+                        )
+                    )
+                    .padding(dimens.paddingHorizontal)
+            ) {
+                AddToCartButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    price = state.cardTotal
+                )
             }
         }
     }
@@ -336,6 +393,45 @@ fun BackButton(
             tint = Color.Unspecified,
             contentDescription = "Back Button",
             modifier = Modifier.size(16.dp)
+        )
+    }
+}
+
+@Composable
+fun AddToCartButton(
+    price: Double,
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 100.dp
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .shadow(
+                elevation = 6.dp,
+                spotColor = Color(0x40F36B50), // #F36B5040 shadow
+                shape = RoundedCornerShape(cornerRadius) // pill shape
+            )
+            .clip(RoundedCornerShape(cornerRadius))
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        PrimaryGradientEnd, // right (start for 270deg)
+                        PrimaryGradientStart // left
+                    )
+                )
+            )
+            .clickable(
+                onClick = {}
+            )
+            .padding(12.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.detail_add_to_cart, price),
+            style = InstrumentSansSemiBold.copy(
+                fontSize = 15.sp,
+                lineHeight = 22.sp
+            ),
+            color = TextOnPrimary
         )
     }
 }

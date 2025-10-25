@@ -1,68 +1,81 @@
 package com.lazy.pizza.detail.presentation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lazy.pizza.core.domain.Product
 import com.lazy.pizza.core.domain.Result
+import com.lazy.pizza.core.domain.Topping
 import com.lazy.pizza.core.domain.repository.ToppingRepository
 import com.lazy.pizza.detail.presentation.DetailAction.*
 import com.lazy.pizza.detail.presentation.DetailAction.ActionAffectingToppingQuantity.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class DetailViewModel(
     private val repository: ToppingRepository
 ): ViewModel() {
 
-    var state by mutableStateOf(DetailState())
-        private set
+    private val product = MutableStateFlow<Product?>(null)
+    private val toppings = MutableStateFlow<List<Topping>>(emptyList())
+
+    var state: StateFlow<DetailState> = combine(
+        product,
+        toppings
+    ) { product, toppings ->
+        DetailState(
+            product = product,
+            toppings = toppings,
+            cardTotal = (product?.unitPrice ?: 0.0) + toppings.sumOf { it.amount * it.unitPrice }
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = DetailState()
+    )
 
     init {
         viewModelScope.launch {
-            val toppings = repository.getToppings()
+            val toppingsResult = repository.getToppings()
 
-            if (toppings is Result.Success) {
-                state = state.copy(
-                    toppings = toppings.data
-                )
+            if (toppingsResult is Result.Success) {
+                toppings.value = toppingsResult.data
             }
         }
     }
     fun onAction(action: DetailAction) {
         when (action) {
             is SetProduct -> {
-                state = state.copy(
-                    product = action.product
-                )
+                product.value = action.product
             }
 
             is ActionAffectingToppingQuantity -> {
-                state = state.copy(
-                    toppings = state.toppings.map { topping ->
-                        if (topping.id == action.topping.id) {
-                            when (action) {
-                                is AddToCart -> {
-                                    topping.copy(
-                                        amount = 1
-                                    )
-                                }
-                                is IncreaseFromCart -> {
-                                    topping.copy(
-                                        amount = topping.amount + 1,
-                                    )
-                                }
-                                is ReduceFromCart -> {
-                                    topping.copy(
-                                        amount = topping.amount - 1,
-                                    )
-                                }
+                toppings.value = toppings.value.map { topping ->
+                    if (topping.id == action.topping.id) {
+                        when (action) {
+                            is AddToCart -> {
+                                topping.copy(
+                                    amount = 1
+                                )
                             }
-                        } else {
-                            topping
+                            is IncreaseFromCart -> {
+                                topping.copy(
+                                    amount = topping.amount + 1,
+                                )
+                            }
+                            is ReduceFromCart -> {
+                                topping.copy(
+                                    amount = topping.amount - 1,
+                                )
+                            }
                         }
+                    } else {
+                        topping
                     }
-                )
+                }
             }
 
             OnBackPressed -> Unit
