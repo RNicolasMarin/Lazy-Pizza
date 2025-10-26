@@ -9,7 +9,8 @@ data class Dimens(
 )
 
 data class DimensHome(
-    val paddingHorizontal: Dp
+    val paddingHorizontal: Dp,
+    val columnsAmount: Int
 )
 
 data class DimensDetail(
@@ -19,7 +20,8 @@ data class DimensDetail(
 
 val dimensPhonePortrait = Dimens(
     home = DimensHome(
-        paddingHorizontal = 16.dp
+        paddingHorizontal = 16.dp,
+        columnsAmount = 1
     ),
     detail = DimensDetail(
         paddingHorizontal = 16.dp,
@@ -29,7 +31,8 @@ val dimensPhonePortrait = Dimens(
 
 val dimensTabletPortrait = Dimens(
     home = DimensHome(
-        paddingHorizontal = 16.dp
+        paddingHorizontal = 16.dp,
+        columnsAmount = 2
     ),
     detail = DimensDetail(
         paddingHorizontal = 16.dp,

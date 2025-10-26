@@ -16,12 +16,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -201,7 +205,7 @@ fun HomeScreen(
                                             categoryShown = true
                                             break
                                         }
-                                        index += 1 + productsByCategory.products.size
+                                        index += 3
                                     }
 
                                     if (categoryShown) {
@@ -250,18 +254,31 @@ fun HomeScreen(
                         )
                         Spacer(Modifier.height(8.dp))
                     }
-                    items(
-                        items = products,
-                        key = { product -> product.id }
-                    ) {
-                        ProductCard(
-                            onAction = onAction,
-                            product = it,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(Modifier.height(
-                            if (it.id == products.last().id) 16.dp else 8.dp
-                        ))
+                    item {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(dimens.columnsAmount),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = 3000.dp), // must define a height or it won't render
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            userScrollEnabled = false // disable inner scroll so outer LazyColumn scrolls
+                        ) {
+
+                            this@LazyVerticalGrid.items(
+                                items = products,
+                                key = { product -> product.id }
+                            ) { product ->
+                                ProductCard(
+                                    onAction = onAction,
+                                    product = product,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+                    }
+                    item {
+                        Spacer(Modifier.height(16.dp))
                     }
                 }
             }
