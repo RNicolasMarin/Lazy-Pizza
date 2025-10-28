@@ -54,6 +54,7 @@ val navItems = listOf(ItemMenu, ItemCart, ItemHistory)
 
 @Composable
 fun RootComposable(
+    cartAmount: Int,
     onClick: (NavItem) -> Unit,
     modifier: Modifier = Modifier,
     screenConfiguration: ScreenConfiguration = MaterialTheme.screenConfiguration,
@@ -83,7 +84,9 @@ fun RootComposable(
                             onClick = {
                                 selected = item
                                 onClick(item)
-                            }
+                            },
+                            cartAmount = if (item == ItemCart) cartAmount else 0,
+                            modifier = Modifier
                         )
                     }
                 }
@@ -111,7 +114,8 @@ fun RootComposable(
                             onClick = {
                                 selected = item
                                 onClick(item)
-                            }
+                            },
+                            cartAmount = if (item == ItemCart) cartAmount else 0,
                         )
                     }
                 }
@@ -132,6 +136,7 @@ fun RootComposable(
 
 @Composable
 fun NavItemComponent(
+    cartAmount: Int,
     item: NavItem,
     selected: Boolean,
     onClick: () -> Unit,
@@ -155,7 +160,7 @@ fun NavItemComponent(
             ) {
                 Spacer(modifier = Modifier.weight(1f))
                 CartNumber(
-                    number = 1
+                    number = cartAmount
                 )
             }
             Column {
@@ -184,10 +189,10 @@ fun NavItemComponent(
 
 @Composable
 fun CartNumber(
-    number: Int?,
+    number: Int,
     modifier: Modifier = Modifier
 ) {
-    if (number != null) {
+    if (number != 0) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = modifier
@@ -203,6 +208,10 @@ fun CartNumber(
                 color = TextOnPrimary
             )
         }
+    } else {
+        Box(
+            modifier = modifier.size(16.dp)
+        )
     }
 }
 

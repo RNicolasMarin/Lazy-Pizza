@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.lazy.pizza.core.domain.repository.ProductRepository
 import com.lazy.pizza.core.domain.ProductsByCategory
 import com.lazy.pizza.core.domain.Result
+import com.lazy.pizza.core.domain.repository.CartRepository
 import com.lazy.pizza.home.presentation.HomeAction.*
 import com.lazy.pizza.home.presentation.HomeAction.ActionAffectingProductQuantity.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val repository: ProductRepository
+    private val repository: ProductRepository,
+    private val cartRepository: CartRepository,
 ): ViewModel() {
 
     private val allProductsByCategory = MutableStateFlow<List<ProductsByCategory>>(emptyList())
@@ -23,8 +25,9 @@ class HomeViewModel(
 
     var state: StateFlow<HomeState> = combine(
         allProductsByCategory,
-        searchField
-    ) { allProducts, field ->
+        searchField,
+        cartRepository.getCartFlow()
+    ) { allProducts, field, cart ->
         val filtered = allProducts.mapNotNull {
             val filteredProducts = it.products.filter { product ->
                 product.name.contains(field.trim(), ignoreCase = true)
@@ -37,7 +40,8 @@ class HomeViewModel(
         }
         HomeState(
             searchField = field,
-            productsByCategories = filtered
+            productsByCategories = filtered,
+            cartAmount = cart.size
         )
     }.stateIn(
         scope = viewModelScope,

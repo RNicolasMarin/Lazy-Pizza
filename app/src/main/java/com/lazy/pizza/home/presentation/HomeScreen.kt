@@ -119,6 +119,7 @@ fun HomeScreen(
     onAction: (HomeAction) -> Unit,
 ) {
     RootComposable(
+        cartAmount = state.cartAmount,
         modifier = Modifier
             .fillMaxSize()
             .background(BG)
@@ -132,13 +133,15 @@ fun HomeScreen(
     ) { innerPadding ->
         HomeScreenContent(
             state = state,
-            onAction = onAction
+            onAction = onAction,
+            bottomPadding = innerPadding.calculateBottomPadding()
         )
     }
 }
 
 @Composable
 fun HomeScreenContent(
+    bottomPadding: Dp,
     state: HomeState,
     onAction: (HomeAction) -> Unit,
     dimens: DimensHome = MaterialTheme.dimen.home,
@@ -159,6 +162,7 @@ fun HomeScreenContent(
             .padding(
                 start = dimens.paddingHorizontal,
                 end = dimens.paddingHorizontal,
+                bottom = if (screenConfiguration == ScreenConfiguration.PHONE_PORTRAIT) bottomPadding else 0.dp
             )
             .onGloballyPositioned { coordinates ->
                 // Get height in pixels
