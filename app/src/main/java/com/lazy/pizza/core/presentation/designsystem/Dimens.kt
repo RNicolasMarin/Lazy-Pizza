@@ -6,6 +6,14 @@ import androidx.compose.ui.unit.dp
 data class Dimens(
     val home: DimensHome,
     val detail: DimensDetail,
+    val nav: DimensNav
+)
+
+data class DimensNav(
+    val cardAndNumberWidth: Dp,
+    val spaceBeforeNumberHeight: Dp,
+    val horizontalIconPadding: Dp,
+    val bottomIconPadding: Dp,
 )
 
 data class DimensHome(
@@ -26,6 +34,12 @@ val dimensPhonePortrait = Dimens(
     detail = DimensDetail(
         paddingHorizontal = 16.dp,
         addCartOverlay = 100.dp
+    ),
+    nav = DimensNav(
+        cardAndNumberWidth = 40.dp,
+        spaceBeforeNumberHeight = 6.dp,
+        horizontalIconPadding = 28.dp,
+        bottomIconPadding = 10.dp
     )
 )
 
@@ -37,5 +51,11 @@ val dimensTabletPortrait = Dimens(
     detail = DimensDetail(
         paddingHorizontal = 16.dp,
         addCartOverlay = 100.dp
+    ),
+    nav = DimensNav(
+        cardAndNumberWidth = 54.dp,
+        spaceBeforeNumberHeight = 4.dp,
+        horizontalIconPadding = 0.dp,
+        bottomIconPadding = 8.dp
     )
 )

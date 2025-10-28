@@ -16,4 +16,8 @@
     <string name="home_no_products">No results found for your query</string>
     <string name="detail_add_toppings">Add Extra Toppings</string>
     <string name="detail_add_to_cart">Add to Cart for $%1$.2f</string>
+
+    <string name="nav_menu">Menu</string>
+    <string name="nav_cart">Cart</string>
+    <string name="nav_history">History</string>
 </resources>

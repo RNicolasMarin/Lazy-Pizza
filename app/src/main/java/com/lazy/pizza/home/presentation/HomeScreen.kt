@@ -65,6 +65,7 @@ import com.lazy.pizza.core.domain.Category.*
 import com.lazy.pizza.core.domain.Product
 import com.lazy.pizza.core.presentation.components.AmountSelector
 import com.lazy.pizza.core.presentation.components.IconButton
+import com.lazy.pizza.core.presentation.components.RootComposable
 import com.lazy.pizza.core.presentation.designsystem.BG
 import com.lazy.pizza.core.presentation.designsystem.DimensHome
 import com.lazy.pizza.core.presentation.designsystem.InstrumentSansBold
@@ -116,16 +117,39 @@ fun HomeScreenRoot(
 fun HomeScreen(
     state: HomeState,
     onAction: (HomeAction) -> Unit,
+) {
+    RootComposable(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BG)
+            .padding(
+                top = statusBarHeight()
+            )
+            .padding(WindowInsets.navigationBars.asPaddingValues()),
+        onClick = { navItem ->
+
+        }
+    ) { innerPadding ->
+        HomeScreenContent(
+            state = state,
+            onAction = onAction
+        )
+    }
+}
+
+@Composable
+fun HomeScreenContent(
+    state: HomeState,
+    onAction: (HomeAction) -> Unit,
     dimens: DimensHome = MaterialTheme.dimen.home,
     screenConfiguration: ScreenConfiguration = MaterialTheme.screenConfiguration,
 ) {
-    val density = LocalDensity.current
-
-    var totalHeightPx by remember { mutableFloatStateOf(0f) }
-    var beforeProductsHeightPx by remember { mutableFloatStateOf(0f) }
-
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+
+    val density = LocalDensity.current
+    var totalHeightPx by remember { mutableFloatStateOf(0f) }
+    var beforeProductsHeightPx by remember { mutableFloatStateOf(0f) }
 
     LazyColumn(
         state = listState,
@@ -133,11 +157,9 @@ fun HomeScreen(
             .fillMaxSize()
             .background(BG)
             .padding(
-                top = statusBarHeight(),
                 start = dimens.paddingHorizontal,
-                end = dimens.paddingHorizontal
+                end = dimens.paddingHorizontal,
             )
-            .padding(WindowInsets.navigationBars.asPaddingValues())
             .onGloballyPositioned { coordinates ->
                 // Get height in pixels
                 totalHeightPx = coordinates.size.height.toFloat()
