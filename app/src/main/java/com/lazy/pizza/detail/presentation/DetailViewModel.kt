@@ -91,6 +91,7 @@ class DetailViewModel(
 
                         cartRepository.addProductToCart(
                             it.copy(
+                                amount = 1,
                                 toppings = toppings.value.filter { topping ->
                                     topping.amount > 0
                                 }

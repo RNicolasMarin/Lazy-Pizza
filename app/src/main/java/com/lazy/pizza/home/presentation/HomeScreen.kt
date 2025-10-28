@@ -34,10 +34,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -74,6 +77,7 @@ import com.lazy.pizza.core.presentation.designsystem.InstrumentSansRegularNormal
 import com.lazy.pizza.core.presentation.designsystem.InstrumentSansSemiBold
 import com.lazy.pizza.core.presentation.designsystem.LazyPizzaTheme
 import com.lazy.pizza.core.presentation.designsystem.MultiDevicePreview
+import com.lazy.pizza.core.presentation.designsystem.ObserveAsEvents
 import com.lazy.pizza.core.presentation.designsystem.Outline
 import com.lazy.pizza.core.presentation.designsystem.Outline50
 import com.lazy.pizza.core.presentation.designsystem.Primary
@@ -89,6 +93,8 @@ import com.lazy.pizza.core.presentation.designsystem.screenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.statusBarHeight
 import com.lazy.pizza.home.presentation.HomeAction.*
 import com.lazy.pizza.home.presentation.HomeAction.ActionAffectingProductQuantity.*
+import com.lazy.pizza.home.presentation.HomeEvent.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.util.Locale
@@ -98,8 +104,33 @@ fun HomeScreenRoot(
     onProductSelected: (Product) -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
+
+    var snackBarMessage by remember { mutableStateOf<String?>(null) }
+
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is ProductAddedToCart -> {
+                snackBarMessage = "${event.product.name} added to cart"
+            }
+        }
+    }
+
+    LaunchedEffect(snackBarMessage) {
+        snackBarMessage?.let {
+            snackBarHostState.showSnackbar(
+                message = it,
+            )
+            delay(100)
+            snackBarMessage = null
+        }
+    }
+
     val state by viewModel.state.collectAsStateWithLifecycle()
+
     HomeScreen(
+        hostState = snackBarHostState,
         state = state,
         onAction = { action ->
             when (action) {
@@ -115,10 +146,12 @@ fun HomeScreenRoot(
 
 @Composable
 fun HomeScreen(
+    hostState: SnackbarHostState,
     state: HomeState,
     onAction: (HomeAction) -> Unit,
 ) {
     RootComposable(
+        hostState = hostState,
         cartAmount = state.cartAmount,
         modifier = Modifier
             .fillMaxSize()
@@ -653,6 +686,7 @@ fun OutlineButtonText(
 private fun ScanHistoryScreenPreview() {
     LazyPizzaTheme {
         HomeScreen(
+            hostState = SnackbarHostState(),
             state = HomeState(
                 productsByCategories = ProductRepositoryImpl.productsByCategory
             ),

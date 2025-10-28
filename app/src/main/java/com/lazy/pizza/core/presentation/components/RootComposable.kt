@@ -18,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -57,6 +59,7 @@ fun RootComposable(
     cartAmount: Int,
     onClick: (NavItem) -> Unit,
     modifier: Modifier = Modifier,
+    hostState: SnackbarHostState = SnackbarHostState(),
     screenConfiguration: ScreenConfiguration = MaterialTheme.screenConfiguration,
     content: @Composable (PaddingValues) -> Unit,
 ) {
@@ -64,6 +67,7 @@ fun RootComposable(
 
     Scaffold(
         modifier = modifier,
+        snackbarHost = { SnackbarHost(hostState = hostState) },
         bottomBar = {
             if (screenConfiguration == ScreenConfiguration.PHONE_PORTRAIT) {
                 Row(

@@ -50,5 +50,20 @@ class CartRepositoryImpl: CartRepository {
         _cartItems.value = newCart
     }
 
+    override fun removeProductFromCart(product: Product) {
+        _cartItems.value = _cartItems.value.filter {
+            it.id != product.id || it.amount != product.amount
+        }
+    }
+
+    override fun updateProductQuantity(product: Product) {
+        _cartItems.value = _cartItems.value.map {
+            if (it.id == product.id) {
+                it.copy(amount = product.amount)
+            } else {
+                it
+            }
+        }
+    }
 
 }
