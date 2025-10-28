@@ -10,5 +10,6 @@ data class Product(
     val ingredients: String,
     val unitPrice: Double,
     val amount: Int,
-    val imageName: String? = null
+    val imageName: String? = null,
+    val toppings: List<Topping> = emptyList()
 )

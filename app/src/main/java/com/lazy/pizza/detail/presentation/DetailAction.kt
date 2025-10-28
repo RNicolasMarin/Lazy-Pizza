@@ -18,4 +18,6 @@ sealed interface DetailAction {
         data class IncreaseFromCart(override val topping: Topping) : ActionAffectingToppingQuantity(topping)
     }
 
+    data object AddProductAndToppingsToCart: DetailAction
+
 }

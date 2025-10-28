@@ -7,4 +7,6 @@ interface CartRepository {
 
     fun getCartFlow(): Flow<List<Product>>
 
+    fun addProductToCart(product: Product)
+
 }

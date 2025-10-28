@@ -1,5 +1,8 @@
 package com.lazy.pizza.core.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Topping(
     val id: Long,
     val name: String,

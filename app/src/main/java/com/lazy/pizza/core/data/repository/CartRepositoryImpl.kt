@@ -1,6 +1,5 @@
 package com.lazy.pizza.core.data.repository
 
-import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Product
 import com.lazy.pizza.core.domain.repository.CartRepository
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class CartRepositoryImpl: CartRepository {
 
-    private val _cartItems = MutableStateFlow<List<Product>>(listOf(Product(
+    /*private val _cartItems = MutableStateFlow<List<Product>>(listOf(Product(
         id = 1,
         category = Category.PIZZA,
         name = "Margherita",
@@ -32,13 +31,23 @@ class CartRepositoryImpl: CartRepository {
             ingredients = "Tomato sauce, mozzarella, ham, pineapple",
             unitPrice = 10.49,
             amount = 0
-        )))
-    //private val _cartItems = MutableStateFlow<List<Product>>(listOf())
+        )))*/
+    private val _cartItems = MutableStateFlow<List<Product>>(listOf())
 
     val cartItems = _cartItems.asStateFlow()
 
     override fun getCartFlow(): Flow<List<Product>> {
         return cartItems
+    }
+
+    override fun addProductToCart(product: Product) {
+        val newCart = _cartItems.value.toMutableList()
+        newCart.add(product.copy(
+            toppings = product.toppings.map {
+                it.copy()
+            }
+        ))
+        _cartItems.value = newCart
     }
 
 

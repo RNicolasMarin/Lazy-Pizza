@@ -82,6 +82,7 @@ import com.lazy.pizza.core.domain.Topping
 import com.lazy.pizza.core.presentation.components.AmountSelector
 import com.lazy.pizza.core.presentation.designsystem.LazyPizzaTheme
 import com.lazy.pizza.core.presentation.designsystem.MultiDevicePreview
+import com.lazy.pizza.core.presentation.designsystem.ObserveAsEvents
 import com.lazy.pizza.core.presentation.designsystem.Outline
 import com.lazy.pizza.core.presentation.designsystem.Primary
 import com.lazy.pizza.core.presentation.designsystem.Primary8
@@ -91,6 +92,7 @@ import com.lazy.pizza.core.presentation.designsystem.ScreenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.TextOnPrimary
 import com.lazy.pizza.core.presentation.designsystem.screenConfiguration
 import com.lazy.pizza.detail.presentation.DetailAction.ActionAffectingToppingQuantity.*
+import com.lazy.pizza.detail.presentation.DetailEvent.*
 import java.util.Locale
 
 @Composable
@@ -101,6 +103,12 @@ fun DetailScreenRoot(
 ) {
     LaunchedEffect(Unit) {
         viewModel.onAction(SetProduct(product))
+    }
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is GoBackToHome -> onBackPressed()
+        }
     }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -174,7 +182,8 @@ fun DetailScreen(
                 }
             }
             ButtonWithOverlay(
-                state = state
+                state = state,
+                onAction = onAction
             )
         }
     } else {
@@ -241,7 +250,8 @@ fun DetailScreen(
                                 }
                         )
                         ButtonWithOverlay(
-                            state = state
+                            state = state,
+                            onAction = onAction
                         )
                     }
                 }
@@ -347,6 +357,7 @@ fun ToppingsCard(
 
 @Composable
 fun ButtonWithOverlay(
+    onAction: (DetailAction) -> Unit,
     state: DetailState,
     modifier: Modifier = Modifier,
     dimens: DimensDetail = MaterialTheme.dimen.detail,
@@ -370,7 +381,10 @@ fun ButtonWithOverlay(
     ) {
         AddToCartButton(
             modifier = Modifier.fillMaxWidth(),
-            price = state.cardTotal
+            price = state.cardTotal,
+            onClick = {
+                onAction(AddProductAndToppingsToCart)
+            }
         )
     }
 }
@@ -559,6 +573,7 @@ fun BackButton(
 
 @Composable
 fun AddToCartButton(
+    onClick: () -> Unit,
     price: Double,
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 100.dp
@@ -581,7 +596,7 @@ fun AddToCartButton(
                 )
             )
             .clickable(
-                onClick = {}
+                onClick = onClick
             )
             .padding(12.dp)
     ) {
