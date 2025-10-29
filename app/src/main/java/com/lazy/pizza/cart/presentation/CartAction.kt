@@ -12,4 +12,6 @@ interface CartAction {
 
     data class ReduceFromCart(val product: Product, val productPosition: Int) : CartAction
 
+    data class AddRecommendationToCart(val product: Product) : CartAction
+
 }

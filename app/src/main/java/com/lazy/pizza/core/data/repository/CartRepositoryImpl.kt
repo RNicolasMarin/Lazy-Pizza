@@ -6,6 +6,7 @@ import com.lazy.pizza.core.domain.repository.CartRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 
 class CartRepositoryImpl: CartRepository {
 
@@ -39,6 +40,18 @@ class CartRepositoryImpl: CartRepository {
 
     override fun getCartFlow(): Flow<List<Product>> {
         return cartItems
+    }
+
+    override fun getRecommendedFlow(): Flow<List<Product>> {
+        return _cartItems.map { inCart ->
+            val sauces = ProductRepositoryImpl.sauces.filter { product ->
+                inCart.none { product.id == it.id }
+            }
+            val drinks = ProductRepositoryImpl.drinks.filter { product ->
+                inCart.none { product.id == it.id }
+            }
+            (sauces + drinks).shuffled()
+        }
     }
 
     var uniqueIdentifier = 0L

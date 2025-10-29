@@ -25,6 +25,7 @@
     <string name="cart_empty_title">Your Cart Is Empty</string>
     <string name="cart_empty_description">Head back to the menu and grab a pizza you love.</string>
     <string name="cart_empty_button">Back to Menu</string>
+    <string name="cart_recommendations">Recommended to add to your order</string>
 
     <string name="history_title">Order History</string>
     <string name="history_not_signed_title">Not Signed In</string>

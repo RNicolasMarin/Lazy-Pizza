@@ -7,6 +7,8 @@ interface CartRepository {
 
     fun getCartFlow(): Flow<List<Product>>
 
+    fun getRecommendedFlow(): Flow<List<Product>>
+
     fun addProductToCart(product: Product)
 
     fun removeProductFromCart(product: Product)

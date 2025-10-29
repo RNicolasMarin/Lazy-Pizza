@@ -2,9 +2,7 @@ package com.lazy.pizza.cart.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lazy.pizza.core.domain.ProductsByCategory
 import com.lazy.pizza.core.domain.repository.CartRepository
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -14,14 +12,13 @@ class CartViewModel(
     private val cartRepository: CartRepository,
 ): ViewModel() {
 
-    private val recommended = MutableStateFlow<List<ProductsByCategory>>(emptyList())
-
     var state: StateFlow<CartState> = combine(
         cartRepository.getCartFlow(),
-        recommended
+        cartRepository.getRecommendedFlow()
     ) { cart, recommended ->
         CartState(
             products = cart,
+            recommended = recommended,
             cartAmount = cart.sumOf { it.amount }
         )
     }.stateIn(
@@ -44,6 +41,11 @@ class CartViewModel(
                 } else {
                     cartRepository.decreaseProductQuantity(action.productPosition)
                 }
+            }
+            is CartAction.AddRecommendationToCart -> {
+                cartRepository.addProductToCart(
+                    action.product.copy(amount = 1)
+                )
             }
         }
     }

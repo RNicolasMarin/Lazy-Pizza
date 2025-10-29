@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lazy.pizza.R
@@ -70,12 +71,13 @@ fun MinusButton(
 fun PlusButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isEnable: Boolean = true
+    isEnable: Boolean = true,
+    iconColor: Color = TextSecondary,
 ) {
     IconButton(
         onClick = onClick,
         modifier = modifier,
-        iconColor = TextSecondary,
+        iconColor = iconColor,
         border = Outline,
         painterRes = R.drawable.ic_plus,
         description = "Plus Icon",
