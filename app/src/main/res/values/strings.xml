@@ -20,4 +20,6 @@
     <string name="nav_menu">Menu</string>
     <string name="nav_cart">Cart</string>
     <string name="nav_history">History</string>
+
+    <string name="cart_title">Cart</string>
 </resources>

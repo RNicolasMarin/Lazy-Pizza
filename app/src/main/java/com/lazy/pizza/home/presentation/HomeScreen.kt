@@ -68,6 +68,8 @@ import com.lazy.pizza.core.domain.Category.*
 import com.lazy.pizza.core.domain.Product
 import com.lazy.pizza.core.presentation.components.AmountSelector
 import com.lazy.pizza.core.presentation.components.IconButton
+import com.lazy.pizza.core.presentation.components.ItemMenu
+import com.lazy.pizza.core.presentation.components.NavItem
 import com.lazy.pizza.core.presentation.components.RootComposable
 import com.lazy.pizza.core.presentation.designsystem.BG
 import com.lazy.pizza.core.presentation.designsystem.DimensHome
@@ -101,6 +103,8 @@ import java.util.Locale
 
 @Composable
 fun HomeScreenRoot(
+    selected: NavItem,
+    onNavSelected: (NavItem) -> Unit,
     onProductSelected: (Product) -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
@@ -130,6 +134,8 @@ fun HomeScreenRoot(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     HomeScreen(
+        selected = selected,
+        onNavSelected = onNavSelected,
         hostState = snackBarHostState,
         state = state,
         onAction = { action ->
@@ -146,11 +152,14 @@ fun HomeScreenRoot(
 
 @Composable
 fun HomeScreen(
+    selected: NavItem,
+    onNavSelected: (NavItem) -> Unit,
     hostState: SnackbarHostState,
     state: HomeState,
     onAction: (HomeAction) -> Unit,
 ) {
     RootComposable(
+        selected = selected,
         hostState = hostState,
         cartAmount = state.cartAmount,
         modifier = Modifier
@@ -161,7 +170,7 @@ fun HomeScreen(
             )
             .padding(WindowInsets.navigationBars.asPaddingValues()),
         onClick = { navItem ->
-
+            onNavSelected(navItem)
         }
     ) { innerPadding ->
         HomeScreenContent(
@@ -686,6 +695,8 @@ fun OutlineButtonText(
 private fun ScanHistoryScreenPreview() {
     LazyPizzaTheme {
         HomeScreen(
+            selected = ItemMenu,
+            onNavSelected = {},
             hostState = SnackbarHostState(),
             state = HomeState(
                 productsByCategories = ProductRepositoryImpl.productsByCategory

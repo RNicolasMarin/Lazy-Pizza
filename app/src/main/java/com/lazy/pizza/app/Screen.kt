@@ -12,4 +12,7 @@ sealed class Screen {
     @Serializable
     data class Detail(val product: Product) : Screen()
 
+    @Serializable
+    data object Cart: Screen()
+
 }

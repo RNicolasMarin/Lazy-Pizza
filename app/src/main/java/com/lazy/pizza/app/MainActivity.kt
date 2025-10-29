@@ -24,6 +24,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     NavigationRoot(
+                        onBack = {
+                            finish()
+                        },
                         navController = rememberNavController()
                     )
                 }

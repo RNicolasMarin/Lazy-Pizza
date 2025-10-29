@@ -56,6 +56,7 @@ val navItems = listOf(ItemMenu, ItemCart, ItemHistory)
 
 @Composable
 fun RootComposable(
+    selected: NavItem,
     cartAmount: Int,
     onClick: (NavItem) -> Unit,
     modifier: Modifier = Modifier,
@@ -63,8 +64,6 @@ fun RootComposable(
     screenConfiguration: ScreenConfiguration = MaterialTheme.screenConfiguration,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    var selected by remember { mutableStateOf(ItemMenu) }
-
     Scaffold(
         modifier = modifier,
         snackbarHost = { SnackbarHost(hostState = hostState) },
@@ -86,7 +85,6 @@ fun RootComposable(
                             item = item,
                             selected = item == selected,
                             onClick = {
-                                selected = item
                                 onClick(item)
                             },
                             cartAmount = if (item == ItemCart) cartAmount else 0,
@@ -116,7 +114,6 @@ fun RootComposable(
                             item = item,
                             selected = item == selected,
                             onClick = {
-                                selected = item
                                 onClick(item)
                             },
                             cartAmount = if (item == ItemCart) cartAmount else 0,
