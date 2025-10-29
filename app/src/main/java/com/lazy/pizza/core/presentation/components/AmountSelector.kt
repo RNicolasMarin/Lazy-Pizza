@@ -21,13 +21,15 @@ fun AmountSelector(
     onMinus: () -> Unit,
     onPlus: () -> Unit,
     modifier: Modifier = Modifier,
-    isPlusEnable: Boolean = true
+    isPlusEnable: Boolean = true,
+    isMinusEnable: Boolean = true
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
     ) {
         MinusButton(
+            isEnable = isMinusEnable,
             onClick = onMinus
         )
         Spacer(Modifier.width(8.dp))
@@ -51,6 +53,7 @@ fun AmountSelector(
 fun MinusButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isEnable: Boolean = true
 ) {
     IconButton(
         onClick = onClick,
@@ -58,7 +61,8 @@ fun MinusButton(
         iconColor = TextSecondary,
         border = Outline,
         painterRes = R.drawable.ic_minus,
-        description = "Minus Icon"
+        description = "Minus Icon",
+        isEnable = isEnable
     )
 }
 

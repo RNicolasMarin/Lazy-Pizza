@@ -1,6 +1,7 @@
 package com.lazy.pizza.core.data.repository
 
 import com.lazy.pizza.core.domain.Product
+import com.lazy.pizza.core.domain.hasSameContent
 import com.lazy.pizza.core.domain.repository.CartRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,13 +41,31 @@ class CartRepositoryImpl: CartRepository {
         return cartItems
     }
 
+    var uniqueIdentifier = 0L
+
     override fun addProductToCart(product: Product) {
-        val newCart = _cartItems.value.toMutableList()
-        newCart.add(product.copy(
-            toppings = product.toppings.map {
-                it.copy()
+        var isNewItem = true
+        val newCart = _cartItems.value.map {
+            if (it.hasSameContent(product)) {
+                isNewItem = false
+                it.copy(amount = it.amount + 1)
+            } else {
+                it
             }
-        ))
+        }.toMutableList()
+
+        if (isNewItem) {
+            newCart.add(
+                product.copy(
+                    uniqueIdentifier = uniqueIdentifier,
+                    toppings = product.toppings.map {
+                        it.copy()
+                    }
+                )
+            )
+            uniqueIdentifier++
+        }
+
         _cartItems.value = newCart
     }
 
@@ -56,10 +75,36 @@ class CartRepositoryImpl: CartRepository {
         }
     }
 
+    override fun removeProductFromCart(productPosition: Int) {
+        _cartItems.value = _cartItems.value.filterIndexed { index, it ->
+            index != productPosition
+        }
+    }
+
     override fun updateProductQuantity(product: Product) {
         _cartItems.value = _cartItems.value.map {
             if (it.id == product.id) {
                 it.copy(amount = product.amount)
+            } else {
+                it
+            }
+        }
+    }
+
+    override fun increaseProductQuantity(productPosition: Int) {
+        _cartItems.value = _cartItems.value.mapIndexed { index, it ->
+            if (index == productPosition) {
+                it.copy(amount = it.amount + 1)
+            } else {
+                it
+            }
+        }
+    }
+
+    override fun decreaseProductQuantity(productPosition: Int) {
+        _cartItems.value = _cartItems.value.mapIndexed { index, it ->
+            if (index == productPosition) {
+                it.copy(amount = it.amount - 1)
             } else {
                 it
             }

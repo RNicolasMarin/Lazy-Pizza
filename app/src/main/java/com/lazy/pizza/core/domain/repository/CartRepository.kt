@@ -11,6 +11,12 @@ interface CartRepository {
 
     fun removeProductFromCart(product: Product)
 
+    fun removeProductFromCart(productPosition: Int)
+
     fun updateProductQuantity(product: Product)
+
+    fun increaseProductQuantity(productPosition: Int)
+
+    fun decreaseProductQuantity(productPosition: Int)
 
 }

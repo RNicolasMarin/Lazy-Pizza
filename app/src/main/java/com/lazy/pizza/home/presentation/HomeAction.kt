@@ -12,9 +12,9 @@ sealed interface HomeAction {
 
         data class DeleteFromCart(override val product: Product) : ActionAffectingProductQuantity(product)
 
-        data class ReduceFromCart(override val product: Product) : ActionAffectingProductQuantity(product)
-
         data class IncreaseFromCart(override val product: Product) : ActionAffectingProductQuantity(product)
+
+        data class ReduceFromCart(override val product: Product) : ActionAffectingProductQuantity(product)
     }
 
     data class ProductSelected(val product: Product) : HomeAction

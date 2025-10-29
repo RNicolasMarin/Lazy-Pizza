@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,8 +29,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
@@ -55,21 +52,20 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.rememberAsyncImagePainter
 import com.lazy.pizza.R
 import com.lazy.pizza.core.data.repository.ProductRepositoryImpl
 import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Category.*
 import com.lazy.pizza.core.domain.Product
-import com.lazy.pizza.core.presentation.components.AmountSelector
 import com.lazy.pizza.core.presentation.components.IconButton
 import com.lazy.pizza.core.presentation.components.ItemMenu
 import com.lazy.pizza.core.presentation.components.NavItem
+import com.lazy.pizza.core.presentation.components.ProductAction
+import com.lazy.pizza.core.presentation.components.ProductCard
+import com.lazy.pizza.core.presentation.components.ProductCardExtraInfo.*
 import com.lazy.pizza.core.presentation.components.RootComposable
 import com.lazy.pizza.core.presentation.designsystem.BG
 import com.lazy.pizza.core.presentation.designsystem.DimensHome
@@ -86,20 +82,16 @@ import com.lazy.pizza.core.presentation.designsystem.Primary
 import com.lazy.pizza.core.presentation.designsystem.Primary8
 import com.lazy.pizza.core.presentation.designsystem.ScreenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.SurfaceHigher
-import com.lazy.pizza.core.presentation.designsystem.SurfaceHighest
 import com.lazy.pizza.core.presentation.designsystem.TextPrimary
 import com.lazy.pizza.core.presentation.designsystem.TextSecondary
-import com.lazy.pizza.core.presentation.designsystem.Urls
 import com.lazy.pizza.core.presentation.designsystem.dimen
 import com.lazy.pizza.core.presentation.designsystem.screenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.statusBarHeight
 import com.lazy.pizza.home.presentation.HomeAction.*
-import com.lazy.pizza.home.presentation.HomeAction.ActionAffectingProductQuantity.*
 import com.lazy.pizza.home.presentation.HomeEvent.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import java.util.Locale
 
 @Composable
 fun HomeScreenRoot(
@@ -337,7 +329,7 @@ fun HomeScreenContent(
                                 items = products,
                                 key = { product -> product.id }
                             ) { product ->
-                                ProductCard(
+                                HomeProductCard(
                                     onAction = onAction,
                                     product = product,
                                     modifier = Modifier.fillMaxWidth()
@@ -355,165 +347,26 @@ fun HomeScreenContent(
 }
 
 @Composable
-fun ProductCard(
+fun HomeProductCard(
     onAction: (HomeAction) -> Unit,
     product: Product,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    ProductCard(
+        product = product,
+        extraInfo = INGREDIENTS,
+        onAction = { action ->
+            val homeAction = when (action) {
+                is ProductAction.AddToCart -> ActionAffectingProductQuantity.AddToCart(action.product)
+                is ProductAction.DeleteFromCart -> ActionAffectingProductQuantity.DeleteFromCart(action.product)
+                is ProductAction.IncreaseFromCart -> ActionAffectingProductQuantity.IncreaseFromCart(action.product)
+                is ProductAction.ReduceFromCart -> ActionAffectingProductQuantity.ReduceFromCart(action.product)
+                is ProductAction.ProductSelected -> ProductSelected(action.product)
+            }
+            onAction(homeAction)
+        },
         modifier = modifier
-            then(
-                if (product.category == PIZZA) {
-                    Modifier.clickable(
-                        onClick = {
-                            onAction(ProductSelected(product))
-                        }
-                    )
-                } else {
-                    Modifier
-                }
-            ),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors().copy(
-            containerColor = SurfaceHigher,
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .height(120.dp)
-                .fillMaxWidth()
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(120.dp)
-                    .padding(start = 2.dp, top = 2.dp, bottom = 2.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            SurfaceHighest,
-                            RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
-                        )
-                )
-
-                Image(
-                    painter = rememberAsyncImagePainter(Urls.getProductImageUrl(product)),
-                    contentDescription = "Icon",
-                    modifier = Modifier
-                        .size(108.dp),
-                    contentScale = ContentScale.Crop
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(
-                        vertical = 12.dp,
-                        horizontal = 16.dp
-                    )
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = product.name,
-                        style = InstrumentSansMedium.copy(
-                            fontSize = 16.sp,
-                            lineHeight = 22.sp
-                        ),
-                        color = TextPrimary,
-                        modifier = Modifier.weight(1f)
-                    )
-                    if (product.amount > 0) {
-                        Spacer(Modifier.width(4.dp))
-                        DeleteButton(
-                            onClick = {
-                                onAction(DeleteFromCart(product))
-                            }
-                        )
-                    }
-                }
-
-                Text(
-                    text = product.ingredients,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    style = InstrumentSansRegularNormal.copy(
-                        fontSize = 14.sp,
-                        lineHeight = 18.sp
-                    ),
-                    color = TextSecondary
-                )
-
-                Spacer(Modifier.weight(1f))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-
-                    when {
-                        product.amount == 0 -> {
-                            Text(
-                                text = "$${product.unitPrice}",
-                                style = InstrumentSansSemiBold.copy(
-                                    fontSize = 24.sp,
-                                    lineHeight = 28.sp
-                                ),
-                                color = TextPrimary
-                            )
-                            if (product.category != PIZZA) {
-                                Spacer(Modifier.weight(1f))
-                                AddButton(
-                                    onClick = {
-                                        onAction(AddToCart(product))
-                                    }
-                                )
-                            }
-                        }
-                        product.amount > 0 -> {
-                            AmountSelector(
-                                amount = product.amount.toString(),
-                                onMinus = {
-                                    onAction(ReduceFromCart(product))
-                                },
-                                onPlus = {
-                                    onAction(IncreaseFromCart(product))
-                                }
-                            )
-
-                            Spacer(Modifier.weight(1f))
-
-                            Column(
-                                horizontalAlignment = Alignment.End,
-                            ) {
-                                Text(
-                                    text = "$${String.format(Locale.US, "%.2f", (product.amount * product.unitPrice))}",
-                                    style = InstrumentSansSemiBold.copy(
-                                        fontSize = 24.sp,
-                                        lineHeight = 28.sp
-                                    ),
-                                    color = TextPrimary
-                                )
-                                Text(
-                                    text = "${product.amount} x $${product.unitPrice}",
-                                    style = InstrumentSansRegularNormal.copy(
-                                        fontSize = 12.sp,
-                                        lineHeight = 16.sp
-                                    ),
-                                    color = TextSecondary
-                                )
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-    }
+    )
 }
 
 @Composable

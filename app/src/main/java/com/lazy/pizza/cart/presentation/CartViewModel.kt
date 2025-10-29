@@ -17,9 +17,9 @@ class CartViewModel(
     private val recommended = MutableStateFlow<List<ProductsByCategory>>(emptyList())
 
     var state: StateFlow<CartState> = combine(
-        recommended,
-        cartRepository.getCartFlow()
-    ) { recommended, cart ->
+        cartRepository.getCartFlow(),
+        recommended
+    ) { cart, recommended ->
         CartState(
             products = cart,
             cartAmount = cart.sumOf { it.amount }
@@ -30,5 +30,21 @@ class CartViewModel(
         initialValue = CartState()
     )
 
-
+    fun onAction(action: CartAction) {
+        when (action) {
+            is CartAction.DeleteFromCart -> {
+                cartRepository.removeProductFromCart(action.productPosition)
+            }
+            is CartAction.IncreaseFromCart -> {
+                cartRepository.increaseProductQuantity(action.productPosition)
+            }
+            is CartAction.ReduceFromCart -> {
+                if (action.product.amount == 1) {
+                    cartRepository.removeProductFromCart(action.productPosition)
+                } else {
+                    cartRepository.decreaseProductQuantity(action.productPosition)
+                }
+            }
+        }
+    }
 }
