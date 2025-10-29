@@ -21,6 +21,7 @@ class CartViewModel(
         cartRepository.getCartFlow()
     ) { recommended, cart ->
         CartState(
+            products = cart,
             cartAmount = cart.sumOf { it.amount }
         )
     }.stateIn(

@@ -22,4 +22,7 @@
     <string name="nav_history">History</string>
 
     <string name="cart_title">Cart</string>
+    <string name="cart_empty_title">Your Cart Is Empty</string>
+    <string name="cart_empty_description">Head back to the menu and grab a pizza you love.</string>
+    <string name="cart_empty_button">Back to Menu</string>
 </resources>

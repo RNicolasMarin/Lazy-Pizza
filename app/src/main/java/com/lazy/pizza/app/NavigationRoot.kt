@@ -28,6 +28,7 @@ fun NavigationRoot(
     var selected by remember { mutableStateOf(ItemMenu) }
 
     val onNavSelected: (NavItem) -> Unit = {
+        selected = it
         val route = when (it) {
             ItemMenu -> Screen.Home
             ItemCart -> Screen.Cart
@@ -76,6 +77,9 @@ fun NavigationRoot(
                 onNavSelected = onNavSelected,
                 onBack = {
                     onBack()
+                },
+                onGoBackToMenu = {
+                    onNavSelected(ItemMenu)
                 }
             )
         }

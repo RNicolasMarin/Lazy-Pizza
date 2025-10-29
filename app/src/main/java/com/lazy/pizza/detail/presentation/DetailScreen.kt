@@ -43,7 +43,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
@@ -80,16 +79,14 @@ import com.lazy.pizza.core.data.repository.ToppingRepositoryImpl
 import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Topping
 import com.lazy.pizza.core.presentation.components.AmountSelector
+import com.lazy.pizza.core.presentation.components.GradientButton
 import com.lazy.pizza.core.presentation.designsystem.LazyPizzaTheme
 import com.lazy.pizza.core.presentation.designsystem.MultiDevicePreview
 import com.lazy.pizza.core.presentation.designsystem.ObserveAsEvents
 import com.lazy.pizza.core.presentation.designsystem.Outline
 import com.lazy.pizza.core.presentation.designsystem.Primary
 import com.lazy.pizza.core.presentation.designsystem.Primary8
-import com.lazy.pizza.core.presentation.designsystem.PrimaryGradientEnd
-import com.lazy.pizza.core.presentation.designsystem.PrimaryGradientStart
 import com.lazy.pizza.core.presentation.designsystem.ScreenConfiguration
-import com.lazy.pizza.core.presentation.designsystem.TextOnPrimary
 import com.lazy.pizza.core.presentation.designsystem.screenConfiguration
 import com.lazy.pizza.detail.presentation.DetailAction.ActionAffectingToppingQuantity.*
 import com.lazy.pizza.detail.presentation.DetailEvent.*
@@ -576,39 +573,14 @@ fun AddToCartButton(
     onClick: () -> Unit,
     price: Double,
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 100.dp
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
+    GradientButton(
+        text = stringResource(R.string.detail_add_to_cart, price),
+        onClick = onClick,
+        horizontalPadding = 12.dp,
+        verticalPadding = 12.dp,
         modifier = modifier
-            .shadow(
-                elevation = 6.dp,
-                spotColor = Color(0x40F36B50), // #F36B5040 shadow
-                shape = RoundedCornerShape(cornerRadius) // pill shape
-            )
-            .clip(RoundedCornerShape(cornerRadius))
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        PrimaryGradientEnd, // right (start for 270deg)
-                        PrimaryGradientStart // left
-                    )
-                )
-            )
-            .clickable(
-                onClick = onClick
-            )
-            .padding(12.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.detail_add_to_cart, price),
-            style = InstrumentSansSemiBold.copy(
-                fontSize = 15.sp,
-                lineHeight = 22.sp
-            ),
-            color = TextOnPrimary
-        )
-    }
+    )
 }
 
 @MultiDevicePreview
