@@ -19,6 +19,12 @@ class CartViewModel(
         CartState(
             products = cart,
             recommended = recommended,
+            cardTotal = cart.sumOf {
+                it.unitPrice * it.amount +
+                    it.toppings.sumOf { topping ->
+                        topping.amount * topping.unitPrice
+                    }
+            },
             cartAmount = cart.sumOf { it.amount }
         )
     }.stateIn(

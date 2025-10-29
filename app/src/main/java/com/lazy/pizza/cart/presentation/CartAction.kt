@@ -14,4 +14,6 @@ interface CartAction {
 
     data class AddRecommendationToCart(val product: Product) : CartAction
 
+    data object GoToCheckout : CartAction
+
 }

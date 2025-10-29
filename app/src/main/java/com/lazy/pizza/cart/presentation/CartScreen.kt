@@ -42,6 +42,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.lazy.pizza.R
 import com.lazy.pizza.cart.presentation.CartAction.*
 import com.lazy.pizza.core.domain.Product
+import com.lazy.pizza.core.presentation.components.GradientButton
+import com.lazy.pizza.core.presentation.components.GradientButtonWithOverlay
 import com.lazy.pizza.core.presentation.components.NavItem
 import com.lazy.pizza.core.presentation.components.NothingToShow
 import com.lazy.pizza.core.presentation.components.PlusButton
@@ -50,6 +52,7 @@ import com.lazy.pizza.core.presentation.components.ProductCard
 import com.lazy.pizza.core.presentation.components.ProductCardExtraInfo.*
 import com.lazy.pizza.core.presentation.components.RootComposable
 import com.lazy.pizza.core.presentation.designsystem.BG
+import com.lazy.pizza.core.presentation.designsystem.DimensGradientButton
 import com.lazy.pizza.core.presentation.designsystem.DimensHome
 import com.lazy.pizza.core.presentation.designsystem.InstrumentSansMedium
 import com.lazy.pizza.core.presentation.designsystem.InstrumentSansRegularNormal
@@ -129,13 +132,14 @@ fun CartScreenContent(
     bottomPadding: Dp,
     onAction: (CartAction) -> Unit,
     dimens: DimensHome = MaterialTheme.dimen.home,
+    dimensGradientButton: DimensGradientButton = MaterialTheme.dimen.gradientButton,
     screenConfiguration: ScreenConfiguration = MaterialTheme.screenConfiguration,
 ) {
     val listState = rememberLazyListState()
 
     if (screenConfiguration == PHONE_PORTRAIT) {
-        LazyColumn(
-            state = listState,
+        Box(
+            contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
                 .fillMaxSize()
                 .background(BG)
@@ -145,61 +149,75 @@ fun CartScreenContent(
                     bottom = bottomPadding
                 )
         ) {
-            item {
-                TopBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            vertical = 20.dp,
-                        )
-                )
-            }
-            if (state.products.isEmpty()) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize()
+            ) {
                 item {
-                    Column {
-                        Spacer(Modifier.height(120.dp))
-                        NothingToShow(
-                            titleRes = R.string.cart_empty_title,
-                            descriptionRes = R.string.cart_empty_description,
-                            buttonRes = R.string.cart_empty_button,
-                            onClick = {
-                                onAction(GoBackToMenu)
-                            }
+                    TopBar(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                vertical = 20.dp,
+                            )
+                    )
+                }
+                if (state.products.isEmpty()) {
+                    item {
+                        Column {
+                            Spacer(Modifier.height(120.dp))
+                            NothingToShow(
+                                titleRes = R.string.cart_empty_title,
+                                descriptionRes = R.string.cart_empty_description,
+                                buttonRes = R.string.cart_empty_button,
+                                onClick = {
+                                    onAction(GoBackToMenu)
+                                }
+                            )
+                        }
+                    }
+                } else {
+                    itemsIndexed(
+                        items = state.products,
+                        key = { _, product -> product.uniqueIdentifier }
+                    ) { index, product ->
+                        ProductCard(
+                            product = product,
+                            extraInfo = TOPPINGS,
+                            onAction = { action ->
+                                val cartAction = when (action) {
+                                    is ProductAction.DeleteFromCart -> DeleteFromCart(index)
+                                    is ProductAction.IncreaseFromCart -> IncreaseFromCart(index)
+                                    is ProductAction.ReduceFromCart -> ReduceFromCart(action.product, index)
+                                    else -> null
+                                }
+                                if (cartAction != null) {
+                                    onAction(cartAction)
+                                }
+                            },
+                            isMinusEnable = product.amount > 1,
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
+                    item {
+                        Recommended(
+                            state = state,
+                            onAction = onAction,
+                            horizontalPadding = 0.dp,
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                        )
+                    }
+                    item {
+                        Spacer(Modifier.height(dimensGradientButton.addCartOverlay))
+                    }
                 }
-            } else {
-                itemsIndexed(
-                    items = state.products,
-                    key = { _, product -> product.uniqueIdentifier }
-                ) { index, product ->
-                    ProductCard(
-                        product = product,
-                        extraInfo = TOPPINGS,
-                        onAction = { action ->
-                            val cartAction = when (action) {
-                                is ProductAction.DeleteFromCart -> DeleteFromCart(index)
-                                is ProductAction.IncreaseFromCart -> IncreaseFromCart(index)
-                                is ProductAction.ReduceFromCart -> ReduceFromCart(action.product, index)
-                                else -> null
-                            }
-                            if (cartAction != null) {
-                                onAction(cartAction)
-                            }
-                        },
-                        isMinusEnable = product.amount > 1,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-                item {
-                    Recommended(
-                        state = state,
-                        onAction = onAction,
-                        horizontalPadding = 0.dp,
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                    )
-                }
+            }
+            if (state.products.isNotEmpty()) {
+                ButtonWithOverlay(
+                    state = state,
+                    onAction = onAction
+                )
             }
         }
     } else {
@@ -355,9 +373,19 @@ fun Recommended(
             }
         }
 
-        Spacer(Modifier.height(8.dp))
+        if (screenConfiguration == TABLET_PORTRAIT) {
+            Spacer(Modifier.height(20.dp))
 
-        //Buton
+            GradientButton(
+                text = stringResource(R.string.cart_go_to_checkout, state.cardTotal),
+                onClick = {
+                    onAction(GoToCheckout)
+                },
+                horizontalPadding = 12.dp,
+                verticalPadding = 12.dp,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 
@@ -373,6 +401,7 @@ fun ProductRecommendationCard(
         colors = CardDefaults.cardColors().copy(
             containerColor = SurfaceHigher,
         ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(
             modifier = Modifier
@@ -441,4 +470,19 @@ fun ProductRecommendationCard(
             }
         }
     }
+}
+
+@Composable
+fun ButtonWithOverlay(
+    onAction: (CartAction) -> Unit,
+    state: CartState,
+    modifier: Modifier = Modifier
+) {
+    GradientButtonWithOverlay(
+        text = stringResource(R.string.cart_go_to_checkout, state.cardTotal),
+        onClick = {
+            onAction(GoToCheckout)
+        },
+        modifier = modifier
+    )
 }

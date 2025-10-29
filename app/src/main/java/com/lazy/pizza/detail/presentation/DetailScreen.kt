@@ -43,7 +43,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -79,7 +78,8 @@ import com.lazy.pizza.core.data.repository.ToppingRepositoryImpl
 import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Topping
 import com.lazy.pizza.core.presentation.components.AmountSelector
-import com.lazy.pizza.core.presentation.components.GradientButton
+import com.lazy.pizza.core.presentation.components.GradientButtonWithOverlay
+import com.lazy.pizza.core.presentation.designsystem.DimensGradientButton
 import com.lazy.pizza.core.presentation.designsystem.LazyPizzaTheme
 import com.lazy.pizza.core.presentation.designsystem.MultiDevicePreview
 import com.lazy.pizza.core.presentation.designsystem.ObserveAsEvents
@@ -286,7 +286,8 @@ fun ToppingsCard(
     onAction: (DetailAction) -> Unit,
     modifier: Modifier = Modifier,
     bottomStart: Dp = 0.dp,
-    dimens: DimensDetail = MaterialTheme.dimen.detail,
+    dimensDetail: DimensDetail = MaterialTheme.dimen.detail,
+    dimensGradientButton: DimensGradientButton = MaterialTheme.dimen.gradientButton,
 ) {
     Column(
         modifier = modifier
@@ -300,8 +301,8 @@ fun ToppingsCard(
                 )
             )
             .padding(
-                start = dimens.paddingHorizontal,
-                end = dimens.paddingHorizontal,
+                start = dimensDetail.paddingHorizontal,
+                end = dimensDetail.paddingHorizontal,
                 bottom = 10.dp
             )
     ) {
@@ -344,7 +345,7 @@ fun ToppingsCard(
                         )
                     }
                     item {
-                        Spacer(Modifier.height(dimens.addCartOverlay))
+                        Spacer(Modifier.height(dimensGradientButton.addCartOverlay))
                     }
                 }
             }
@@ -357,33 +358,16 @@ fun ButtonWithOverlay(
     onAction: (DetailAction) -> Unit,
     state: DetailState,
     modifier: Modifier = Modifier,
-    dimens: DimensDetail = MaterialTheme.dimen.detail,
+    dimens: DimensGradientButton = MaterialTheme.dimen.gradientButton
 ) {
-    Box(
-        contentAlignment = Alignment.BottomCenter,
+    GradientButtonWithOverlay(
+        text = stringResource(R.string.detail_add_to_cart, state.cardTotal),
+        onClick = {
+            onAction(AddProductAndToppingsToCart)
+        },
+        padding = dimens.paddingHorizontal,
         modifier = modifier
-            .height(dimens.addCartOverlay)
-            .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFFFFFFFF),          // solid white at start
-                        Color(0xFFFFFFFF).copy(alpha = 0f) // transparent at end
-                    ),
-                    startY = Float.POSITIVE_INFINITY, // 0deg → bottom to top
-                    endY = 0f
-                )
-            )
-            .padding(dimens.paddingHorizontal)
-    ) {
-        AddToCartButton(
-            modifier = Modifier.fillMaxWidth(),
-            price = state.cardTotal,
-            onClick = {
-                onAction(AddProductAndToppingsToCart)
-            }
-        )
-    }
+    )
 }
 
 @Composable
@@ -566,21 +550,6 @@ fun BackButton(
             modifier = Modifier.size(16.dp)
         )
     }
-}
-
-@Composable
-fun AddToCartButton(
-    onClick: () -> Unit,
-    price: Double,
-    modifier: Modifier = Modifier,
-) {
-    GradientButton(
-        text = stringResource(R.string.detail_add_to_cart, price),
-        onClick = onClick,
-        horizontalPadding = 12.dp,
-        verticalPadding = 12.dp,
-        modifier = modifier
-    )
 }
 
 @MultiDevicePreview

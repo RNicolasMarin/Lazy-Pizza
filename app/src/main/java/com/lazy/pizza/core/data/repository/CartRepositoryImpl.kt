@@ -6,6 +6,7 @@ import com.lazy.pizza.core.domain.repository.CartRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 class CartRepositoryImpl: CartRepository {
@@ -43,15 +44,21 @@ class CartRepositoryImpl: CartRepository {
     }
 
     override fun getRecommendedFlow(): Flow<List<Product>> {
-        return _cartItems.map { inCart ->
-            val sauces = ProductRepositoryImpl.sauces.filter { product ->
-                inCart.none { product.id == it.id }
+        return _cartItems
+            .map { inCart ->
+                val sauces = ProductRepositoryImpl.sauces.filter { product ->
+                    inCart.none { product.id == it.id }
+                }
+                val drinks = ProductRepositoryImpl.drinks.filter { product ->
+                    inCart.none { product.id == it.id }
+                }
+                sauces + drinks
             }
-            val drinks = ProductRepositoryImpl.drinks.filter { product ->
-                inCart.none { product.id == it.id }
+            .distinctUntilChanged { old, new ->
+                old.size == new.size && old.map { it.id }.toSet() == new.map { it.id }.toSet()
             }
-            (sauces + drinks).shuffled()
-        }
+            // Shuffle *only when* the content changes
+            .map { it.shuffled() }
     }
 
     var uniqueIdentifier = 0L
