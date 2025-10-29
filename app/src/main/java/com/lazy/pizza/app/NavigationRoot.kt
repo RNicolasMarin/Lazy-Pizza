@@ -18,6 +18,7 @@ import com.lazy.pizza.core.presentation.ProductNavType
 import com.lazy.pizza.core.presentation.components.ItemCart
 import com.lazy.pizza.core.presentation.components.ItemMenu
 import com.lazy.pizza.core.presentation.components.NavItem
+import com.lazy.pizza.history.presentation.HistoryScreenRoot
 import kotlin.reflect.typeOf
 
 @Composable
@@ -32,8 +33,7 @@ fun NavigationRoot(
         val route = when (it) {
             ItemMenu -> Screen.Home
             ItemCart -> Screen.Cart
-            else -> Screen.Home
-            //ItemHistory -> Screen.Home
+            else -> Screen.History
         }
         navController.navigate(route) {
             popUpTo(navController.graph.findStartDestination().id) {
@@ -80,6 +80,16 @@ fun NavigationRoot(
                 },
                 onGoBackToMenu = {
                     onNavSelected(ItemMenu)
+                }
+            )
+        }
+
+        composable<Screen.History> {
+            HistoryScreenRoot(
+                selected = selected,
+                onNavSelected = onNavSelected,
+                onBack = {
+                    onBack()
                 }
             )
         }

@@ -15,4 +15,7 @@ sealed class Screen {
     @Serializable
     data object Cart: Screen()
 
+    @Serializable
+    data object History: Screen()
+
 }
