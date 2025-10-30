@@ -74,7 +74,7 @@ import com.lazy.pizza.detail.presentation.DetailAction.*
 import org.koin.androidx.compose.koinViewModel
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.lazy.pizza.core.data.repository.ToppingRepositoryImpl
+import com.lazy.pizza.core.data.repository.ToppingRepositoryImplLocal
 import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Topping
 import com.lazy.pizza.core.presentation.components.AmountSelector
@@ -558,7 +558,7 @@ private fun DetailScreenPreview() {
     LazyPizzaTheme {
         DetailScreen(
             state = DetailState(
-                toppings = ToppingRepositoryImpl.toppings,
+                toppings = ToppingRepositoryImplLocal.toppings,
                 product = Product(
                     id = 1,
                     category = Category.PIZZA,

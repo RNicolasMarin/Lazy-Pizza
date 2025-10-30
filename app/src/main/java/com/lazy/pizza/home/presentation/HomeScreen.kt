@@ -56,7 +56,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lazy.pizza.R
-import com.lazy.pizza.core.data.repository.ProductRepositoryImpl
+import com.lazy.pizza.core.data.repository.ProductRepositoryImplLocal
 import com.lazy.pizza.core.domain.Category
 import com.lazy.pizza.core.domain.Category.*
 import com.lazy.pizza.core.domain.Product
@@ -552,7 +552,7 @@ private fun ScanHistoryScreenPreview() {
             onNavSelected = {},
             hostState = SnackbarHostState(),
             state = HomeState(
-                productsByCategories = ProductRepositoryImpl.productsByCategory
+                productsByCategories = ProductRepositoryImplLocal.productsByCategory
             ),
             onAction = {},
         )

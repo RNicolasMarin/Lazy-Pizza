@@ -7,7 +7,7 @@ import com.lazy.pizza.core.domain.ProductsByCategory
 import com.lazy.pizza.core.domain.Result
 import kotlinx.coroutines.delay
 
-class ProductRepositoryImpl: ProductRepository {
+class ProductRepositoryImplLocal: ProductRepository {
 
     companion object {
 
@@ -257,10 +257,19 @@ class ProductRepositoryImpl: ProductRepository {
                 products = iceCream
             )
         )
+
     }
 
     override suspend fun getProducts(): Result<List<ProductsByCategory>> {
         delay(500)
         return Result.Success(productsByCategory)
+    }
+
+    override suspend fun getDrinks(): List<Product> {
+        return drinks
+    }
+
+    override suspend fun getSauces(): List<Product> {
+        return sauces
     }
 }

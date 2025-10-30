@@ -3,13 +3,16 @@ package com.lazy.pizza.core.data.repository
 import com.lazy.pizza.core.domain.Product
 import com.lazy.pizza.core.domain.hasSameContent
 import com.lazy.pizza.core.domain.repository.CartRepository
+import com.lazy.pizza.core.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-class CartRepositoryImpl: CartRepository {
+class CartRepositoryImpl(
+    private val productRepository: ProductRepository
+): CartRepository {
 
     /*private val _cartItems = MutableStateFlow<List<Product>>(listOf(Product(
         id = 1,
@@ -46,10 +49,10 @@ class CartRepositoryImpl: CartRepository {
     override fun getRecommendedFlow(): Flow<List<Product>> {
         return _cartItems
             .map { inCart ->
-                val sauces = ProductRepositoryImpl.sauces.filter { product ->
+                val sauces = productRepository.getSauces().filter { product ->
                     inCart.none { product.id == it.id }
                 }
-                val drinks = ProductRepositoryImpl.drinks.filter { product ->
+                val drinks = productRepository.getDrinks().filter { product ->
                     inCart.none { product.id == it.id }
                 }
                 sauces + drinks

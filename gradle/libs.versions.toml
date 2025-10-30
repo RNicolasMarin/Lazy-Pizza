@@ -2,6 +2,8 @@
 #From Plugins
 agp = "8.13.0"
 kotlin = "2.2.20"
+firebase-bom = "33.3.0"
+google-services = "4.4.2"
 
 #From Libraries
 coreKtx = "1.17.0"
@@ -23,7 +25,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 
 
 [libraries]
@@ -64,6 +66,9 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 
 #Serialization
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore-ktx" }
 
 
 [bundles]

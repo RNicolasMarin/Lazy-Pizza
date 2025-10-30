@@ -4,11 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Topping(
-    val id: Long,
-    val name: String,
-    val unitPrice: Double,
-    val amount: Int,
-    val imageName: String? = null
+    val id: Int = 0,
+    val name: String = "",
+    val unitPrice: Double = 0.0,
+    val amount: Int = 0,
+    val imageName: String = ""
 )
 
 fun List<Topping>.hasSameContent(other: List<Topping>): Boolean {

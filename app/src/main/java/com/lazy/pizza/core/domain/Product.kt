@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
-    val id: Long,
-    val category: Category,
-    val name: String,
-    val ingredients: String,
-    val unitPrice: Double,
-    val amount: Int,
+    val id: Long = 0L,
+    val category: Category = Category.PIZZA,
+    val name: String = "",
+    val ingredients: String = "",
+    val unitPrice: Double = 0.0,
+    val amount: Int = 0,
     val imageName: String? = null,
     val toppings: List<Topping> = emptyList(),
     val uniqueIdentifier: Long = id

@@ -5,7 +5,7 @@ import com.lazy.pizza.core.domain.Topping
 import com.lazy.pizza.core.domain.repository.ToppingRepository
 import kotlinx.coroutines.delay
 
-class ToppingRepositoryImpl: ToppingRepository {
+class ToppingRepositoryImplLocal: ToppingRepository {
 
     companion object {
         val toppings = listOf(
