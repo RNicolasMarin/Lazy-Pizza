@@ -84,6 +84,7 @@ import com.lazy.pizza.core.presentation.designsystem.ScreenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.SurfaceHigher
 import com.lazy.pizza.core.presentation.designsystem.TextPrimary
 import com.lazy.pizza.core.presentation.designsystem.TextSecondary
+import com.lazy.pizza.core.presentation.designsystem.TextSecondary8
 import com.lazy.pizza.core.presentation.designsystem.dimen
 import com.lazy.pizza.core.presentation.designsystem.screenConfiguration
 import com.lazy.pizza.core.presentation.designsystem.statusBarHeight
@@ -417,6 +418,41 @@ fun TopBar(
             text = stringResource(R.string.home_toolbar_phone_number),
             style = InstrumentSansRegularNormal,
             color = TextPrimary
+        )
+        Spacer(Modifier.width(12.dp))
+        SessionButton(
+            loggedIn = true
+        )
+    }
+}
+
+@Composable
+fun SessionButton(
+    loggedIn: Boolean,
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 100.dp,
+) {
+    val shape = RoundedCornerShape(cornerRadius)
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .background(
+                color = if (loggedIn) Primary8 else TextSecondary8,
+                shape = shape
+            )
+            .clip(shape)
+            .clickable(
+                onClick = {
+
+                },
+            )
+            .padding(8.dp)
+    ) {
+        Icon(
+            painter = painterResource(if (loggedIn) R.drawable.ic_log_out else R.drawable.ic_log_in),
+            tint = Color.Unspecified,
+            contentDescription = "Back Button",
+            modifier = Modifier.size(16.dp)
         )
     }
 }
